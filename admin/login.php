@@ -2,7 +2,7 @@
 session_start();
 require_once __DIR__ . '/../config/database.php';
 
-// Check if already logged in
+//  Check if already logged in
 if (isset($_SESSION['admin_id'])) {
     header('Location: index.php');
     exit();
