@@ -551,7 +551,7 @@ require_once __DIR__ . '/includes/header.php';
         padding: 0.75rem;
     }
     }
-}
+
 
 /* Better form controls on mobile */
 @media (max-width: 768px) {
