@@ -1,8 +1,8 @@
 <?php
 // Configuration InfinityFree (production)
 return [
-    'DB_HOST' => 'sql105.infinityfree.com',
-    'DB_USER' => 'if0_40174223',
-    'DB_PASS' => 'jQrTSnjte9',
-    'DB_NAME' => 'if0_40174223_gpower_bd'
+    'DB_HOST' => '127.0.0.1',
+    'DB_USER' => 'u268450082_ben',
+    'DB_PASS' => 'Gpower@store62',
+    'DB_NAME' => 'u268450082_gpower'
 ];
