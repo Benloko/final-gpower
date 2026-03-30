@@ -4,7 +4,7 @@ requireLogin();
 
 $pdo = getPDOConnection();
 
-// Handle delete
+//  Handle delete
 if (isset($_GET['delete'])) {
     $id = (int)$_GET['delete'];
     $stmt = $pdo->prepare("DELETE FROM categories WHERE id = ?");
