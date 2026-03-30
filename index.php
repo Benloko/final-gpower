@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 $page_title = 'Home';
 require_once __DIR__ . '/includes/header.php';
 
@@ -22,11 +25,7 @@ $total_products = $stmt->fetch()['total'];
 $total_pages = ceil($total_products / ITEMS_PER_PAGE);
 
 // Get products (All active products, not just featured)
-$query = "SELECT p.*
-          FROM products p
-          WHERE p.status = 'active'" . $search_filter . "
-          ORDER BY p.created_at DESC 
-          LIMIT ? OFFSET ?";
+$query = "SELECT p.* FROM products p WHERE p.status = 'active'" . $search_filter . " ORDER BY p.created_at DESC LIMIT ? OFFSET ?";
 $params[] = ITEMS_PER_PAGE;
 $params[] = $offset;
 $stmt = $pdo->prepare($query);
@@ -46,8 +45,8 @@ $products = $stmt->fetchAll();
                 <form action="" method="GET" class="hero-search-form mb-4 mx-auto position-relative">
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-search"></i></span>
-                        <input type="text" name="search" class="form-control border-0 shadow-none" placeholder="Rechercher un produit..." value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>">
-                        <button type="submit" class="btn btn-primary">Rechercher</button>
+                        <input type="text" name="search" class="form-control border-0 shadow-none" placeholder="Search for a product..." value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>">
+                        <button type="submit" class="btn btn-primary">Search</button>
                     </div>
                 </form>
             </div>
@@ -65,7 +64,7 @@ $products = $stmt->fetchAll();
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" id="products-grid">
             <?php foreach ($products as $product): ?>
             <div class="col">
-                <div class="card product-card h-100 border-0 shadow-sm position-relative">
+                <div class="card product-card h-100 border-0 shadow-sm position-relative" data-href="<?php echo BASE_URL; ?>/product-details.php?id=<?php echo $product['id']; ?>">
                     <div class="product-image-wrap">
                         <a href="<?php echo BASE_URL; ?>/product-details.php?id=<?php echo $product['id']; ?>" class="d-block">
                             <?php if ($product['main_image']): ?>
@@ -87,7 +86,7 @@ $products = $stmt->fetchAll();
                         </h6>
                         <div class="d-flex justify-content-between align-items-center mt-2 info-row">
                             <div>
-                                <div class="product-price"><?php echo number_format($product['price'], 2, ',', ' '); ?> FCFA</div>
+                                <div class="product-price"><?php echo format_price($product['price']); ?></div>
                                 <div class="product-location"><i class="fas fa-map-marker-alt me-1"></i><?php echo htmlspecialchars($product['location'] ?? ''); ?></div>
                             </div>
                             <div class="product-contact">
@@ -111,12 +110,12 @@ $products = $stmt->fetchAll();
         </div>
         <?php endif; ?>
 
-        <!-- Pagination / Voir Plus -->
+        <!-- Pagination / See More -->
         <?php if ($page < $total_pages): ?>
         <div class="text-center mt-5">
             <a href="?page=<?php echo $page + 1; ?><?php echo isset($_GET['search']) ? '&search=' . urlencode($_GET['search']) : ''; ?>#products" 
                class="btn btn-outline-primary rounded-pill px-5 py-2 fw-bold">
-                Voir Plus <i class="fas fa-arrow-down ms-2"></i>
+                See More <i class="fas fa-arrow-down ms-2"></i>
             </a>
         </div>
         <?php endif; ?>
@@ -125,7 +124,7 @@ $products = $stmt->fetchAll();
         <div class="text-center mt-3">
             <a href="?page=<?php echo $page - 1; ?><?php echo isset($_GET['search']) ? '&search=' . urlencode($_GET['search']) : ''; ?>#products" 
                class="text-muted small text-decoration-none">
-                <i class="fas fa-arrow-up me-1"></i> Retour
+                <i class="fas fa-arrow-up me-1"></i> Back
             </a>
         </div>
         <?php endif; ?>

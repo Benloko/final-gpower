@@ -1,14 +1,14 @@
 <?php
-// Configuration email
+// Email configuration
 define('SMTP_HOST', 'smtp.gmail.com');
 define('SMTP_PORT', 587);
-define('SMTP_USERNAME', 'votre-email@gmail.com'); // À modifier
-define('SMTP_PASSWORD', 'votre-mot-de-passe-app'); // À modifier
-define('SMTP_FROM_EMAIL', 'votre-email@gmail.com'); // À modifier
+define('SMTP_USERNAME', 'votre-email@gmail.com'); // Change this
+define('SMTP_PASSWORD', 'votre-mot-de-passe-app'); // Change this
+define('SMTP_FROM_EMAIL', 'votre-email@gmail.com'); // Change this
 define('SMTP_FROM_NAME', 'Gpower');
 
 /**
- * Fonction pour envoyer un email avec PHPMailer
+ * Function to send an email using PHPMailer
  */
 function sendEmail($to, $toName, $subject, $body, $isHTML = false) {
     require_once __DIR__ . '/../vendor/autoload.php';
@@ -16,7 +16,7 @@ function sendEmail($to, $toName, $subject, $body, $isHTML = false) {
     $mail = new PHPMailer\PHPMailer\PHPMailer(true);
     
     try {
-        // Configuration SMTP
+        // SMTP configuration
         $mail->isSMTP();
         $mail->Host = SMTP_HOST;
         $mail->SMTPAuth = true;
@@ -26,12 +26,12 @@ function sendEmail($to, $toName, $subject, $body, $isHTML = false) {
         $mail->Port = SMTP_PORT;
         $mail->CharSet = 'UTF-8';
         
-        // Expéditeur et destinataire
+        // Sender and recipient
         $mail->setFrom(SMTP_FROM_EMAIL, SMTP_FROM_NAME);
         $mail->addAddress($to, $toName);
         $mail->addReplyTo(SMTP_FROM_EMAIL, SMTP_FROM_NAME);
         
-        // Contenu
+        // Content
         $mail->isHTML($isHTML);
         $mail->Subject = $subject;
         $mail->Body = $body;

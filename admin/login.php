@@ -320,45 +320,45 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <form method="POST" action="">
                     <div class="mb-3">
                         <label class="form-label">
-                            <i class="fas fa-user me-1 text-primary"></i>Nom d'utilisateur ou Email
+                            <i class="fas fa-user me-1 text-primary"></i>Username or Email
                         </label>
                         <div class="input-group">
                             <span class="input-group-text">
                                 <i class="fas fa-user"></i>
                             </span>
                             <input type="text" 
-                                   name="username" 
-                                   class="form-control" 
-                                   placeholder="Entrez votre identifiant"
-                                   required 
-                                   autofocus>
+                                name="username" 
+                                class="form-control" 
+                                placeholder="Enter your username"
+                                required 
+                                autofocus>
                         </div>
                     </div>
                     
                     <div class="mb-4">
                         <label class="form-label">
-                            <i class="fas fa-lock me-1 text-primary"></i>Mot de passe
+                            <i class="fas fa-lock me-1 text-primary"></i>Password
                         </label>
                         <div class="input-group">
                             <span class="input-group-text">
                                 <i class="fas fa-lock"></i>
                             </span>
                             <input type="password" 
-                                   name="password" 
-                                   class="form-control" 
-                                   placeholder="Entrez votre mot de passe"
-                                   required>
+                                name="password" 
+                                class="form-control" 
+                                placeholder="Enter your password"
+                                required>
                         </div>
                     </div>
                     
                     <button type="submit" class="btn btn-primary btn-login w-100 mb-3">
-                        <i class="fas fa-sign-in-alt me-2"></i>Se connecter
+                        <i class="fas fa-sign-in-alt me-2"></i>Sign in
                     </button>
                     
                     <div class="text-center">
                         <a href="../" class="back-link">
                             <i class="fas fa-arrow-left"></i>
-                            <span>Retour au site</span>
+                            <span>Back to site</span>
                         </a>
                     </div>
                 </form>
@@ -368,7 +368,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="footer-note">
             <small>
                 <i class="fas fa-shield-alt me-1"></i>
-                Connexion sécurisée - Gpower © 2025
+                Secure login - Gpower © 2025
             </small>
         </div>
     </div>

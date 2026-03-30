@@ -53,6 +53,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($name) || $price <= 0) {
         $error = 'Please fill in all required fields';
     } else {
+        // Ensure PDF upload directory exists
+        if (!is_dir(PRODUCT_PDF_PATH)) {
+            @mkdir(PRODUCT_PDF_PATH, 0755, true);
+        }
+
         // Handle main image upload
         $main_image = '';
         
@@ -69,15 +74,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         }
         
-        // Insert product (include quantity if the column exists)
+        // Handle PDF upload
+        $pdf_file = '';
+        
+        if (isset($_FILES['pdf_file']) && $_FILES['pdf_file']['error'] == 0) {
+            $file_ext = strtolower(pathinfo($_FILES['pdf_file']['name'], PATHINFO_EXTENSION));
+            
+            if (in_array($file_ext, ALLOWED_PDF_EXTENSIONS) && $_FILES['pdf_file']['size'] <= MAX_PDF_FILE_SIZE) {
+                $new_filename = 'prod_' . time() . '_' . uniqid() . '.' . $file_ext;
+                $upload_path = PRODUCT_PDF_PATH . $new_filename;
+                
+                if (move_uploaded_file($_FILES['pdf_file']['tmp_name'], $upload_path)) {
+                    $pdf_file = $new_filename;
+                }
+            }
+        }
+        
+        // Collect identification number
+        $identification_number = sanitize($_POST['identification_number'] ?? '');
+        
+        // Insert product (include quantity, identification_number, and pdf_file if the columns exist)
         if ($hasQuantity) {
-            $stmt = $pdo->prepare("INSERT INTO products (name, slug, location, specifications, price, quantity, main_image, status, featured) 
-                                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->execute([$name, $slug, $location, $specifications, $price, $quantity, $main_image, $status, $featured]);
+            $stmt = $pdo->prepare("INSERT INTO products (name, identification_number, slug, location, specifications, price, quantity, main_image, pdf_file, status, featured) 
+                                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$name, $identification_number, $slug, $location, $specifications, $price, $quantity, $main_image, $pdf_file, $status, $featured]);
         } else {
-            $stmt = $pdo->prepare("INSERT INTO products (name, slug, location, specifications, price, main_image, status, featured) 
-                                   VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->execute([$name, $slug, $location, $specifications, $price, $main_image, $status, $featured]);
+            $stmt = $pdo->prepare("INSERT INTO products (name, identification_number, slug, location, specifications, price, main_image, pdf_file, status, featured) 
+                                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$name, $identification_number, $slug, $location, $specifications, $price, $main_image, $pdf_file, $status, $featured]);
         }
         $product_id = $pdo->lastInsertId();
         
@@ -117,12 +141,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $notification_result = notifyNewProduct($product_data);
             
             if ($notification_result && $notification_result['success'] > 0) {
-                $success = 'Produit créé et ' . $notification_result['success'] . ' abonné(s) notifié(s) par email !';
+                $success = 'Product created and ' . $notification_result['success'] . ' subscriber(s) notified by email!';
             } else {
-                $success = 'Produit créé avec succès !';
+                $success = 'Product created successfully!';
             }
         } else {
-            $success = 'Produit créé avec succès !';
+            $success = 'Product created successfully!';
         }
         
         redirect('product-edit.php?id=' . $product_id);
@@ -188,7 +212,7 @@ require_once __DIR__ . '/includes/header.php';
                         <input type="text" 
                                name="location" 
                                class="form-control border-1" 
-                               placeholder="e.g. Abidjan, Côte d'Ivoire">
+                            placeholder="e.g. Abidjan, Ivory Coast">
                     </div>
                 </div>
             </div>
@@ -333,6 +357,69 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
                 </div>
             </div>
+
+            <div class="card border-0 shadow-sm rounded-3 mb-3">
+                <div class="card-header bg-light border-0 py-2 px-3">
+                    <h6 class="mb-0 fw-bold text-dark" style="font-size: 0.9rem;"><i class="fas fa-file-pdf me-2 text-danger"></i>Documents & Inventory</h6>
+                </div>
+                <div class="card-body p-3">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold small text-muted mb-1">
+                            <i class="fas fa-barcode text-secondary me-1"></i>Product Identification Number
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-1">
+                                <i class="fas fa-hashtag text-secondary"></i>
+                            </span>
+                            <input type="text" 
+                                   name="identification_number" 
+                                   class="form-control border-1" 
+                                   placeholder="e.g. SN-2025-001, MODEL-XYZ-789">
+                        </div>
+                        <small class="text-muted d-block mt-1">
+                            <i class="fas fa-info-circle me-1"></i>Unique serial, model code, or product ID
+                        </small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold small text-muted mb-2">
+                            <i class="fas fa-file-pdf text-danger me-1"></i>Product Details PDF (Datasheet, Specs, Manual)
+                        </label>
+                        <div class="border border-2 border-dashed rounded-3 p-3 text-center bg-light position-relative" style="cursor: pointer;">
+                            <i class="fas fa-file-pdf text-danger mb-2" style="font-size: 1.5rem; opacity: 0.4;"></i>
+                            <p class="text-muted small mb-0 fw-semibold">Click to upload PDF</p>
+                            <p class="text-muted mb-0" style="font-size: 0.65rem;">Max 10MB • PDF only - For technical details & specifications</p>
+                            <input type="file" 
+                                   id="pdfInput"
+                                   name="pdf_file" 
+                                   class="position-absolute w-100 h-100 top-0 start-0 opacity-0" 
+                                   style="cursor: pointer;"
+                                   accept=".pdf">
+                            <div id="pdfFileName" class="text-success fw-semibold mt-2" style="font-size: 0.85rem; display: none;"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-0">
+                        <label class="form-label fw-semibold small text-muted mb-1">
+                            <i class="fas fa-cubes text-info me-1"></i>Quantity in Stock
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-1">
+                                <i class="fas fa-layer-group text-info"></i>
+                            </span>
+                            <input type="number" 
+                                   name="quantity" 
+                                   class="form-control border-1" 
+                                   min="0" 
+                                   value="0"
+                                   placeholder="Units available">
+                        </div>
+                        <small class="text-muted d-block mt-1">
+                            <i class="fas fa-info-circle me-1"></i>Display stock status on product page
+                        </small>
+                    </div>
+                </div>
+            </div>
             
             <div class="d-flex gap-2 mb-4">
                 <button type="submit" class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm">
@@ -408,5 +495,31 @@ require_once __DIR__ . '/includes/header.php';
         </div>
     </div>
 </div>
+
+<script>
+// Handle PDF file display
+document.getElementById('pdfInput').addEventListener('change', function(e) {
+    const fileName = this.files[0]?.name || '';
+    const pdfFileNameDiv = document.getElementById('pdfFileName');
+    
+    if (fileName) {
+        pdfFileNameDiv.textContent = '✓ ' + fileName;
+        pdfFileNameDiv.style.display = 'block';
+    } else {
+        pdfFileNameDiv.style.display = 'none';
+    }
+});
+
+function previewImage(input, previewId) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById(previewId).src = e.target.result;
+            document.getElementById(previewId).style.display = 'block';
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

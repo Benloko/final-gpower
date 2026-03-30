@@ -12,7 +12,7 @@ if (isset($_GET['delete'])) {
     try {
         $stmt = $pdo->prepare("DELETE FROM newsletter_subscribers WHERE id = ?");
         $stmt->execute([$id]);
-        $success = "Abonné supprimé avec succès!";
+        $success = "Subscriber deleted successfully!";
     } catch (Exception $e) {
         $error = "Erreur lors de la suppression.";
     }
@@ -23,7 +23,7 @@ if (isset($_GET['unsubscribe'])) {
     try {
         $stmt = $pdo->prepare("UPDATE newsletter_subscribers SET status = 'unsubscribed' WHERE id = ?");
         $stmt->execute([$id]);
-        $success = "Abonné désactivé!";
+        $success = "Subscriber unsubscribed!";
     } catch (Exception $e) {
         $error = "Erreur.";
     }
@@ -34,7 +34,7 @@ if (isset($_GET['reactivate'])) {
     try {
         $stmt = $pdo->prepare("UPDATE newsletter_subscribers SET status = 'active' WHERE id = ?");
         $stmt->execute([$id]);
-        $success = "Abonné réactivé!";
+        $success = "Subscriber reactivated!";
     } catch (Exception $e) {
         $error = "Erreur.";
     }
@@ -49,7 +49,7 @@ if (isset($_GET['export'])) {
     header('Content-Disposition: attachment; filename=newsletter_subscribers_' . date('Y-m-d') . '.csv');
     
     $output = fopen('php://output', 'w');
-    fputcsv($output, ['Email', 'Date d\'inscription', 'Statut']);
+    fputcsv($output, ['Email', 'Subscription Date', 'Status']);
     
     foreach ($subscribers as $sub) {
         fputcsv($output, [
@@ -87,7 +87,7 @@ $stmt = $pdo->query("SELECT
 FROM newsletter_subscribers");
 $counts = $stmt->fetch();
 
-$page_title = 'Newsletter - Abonnés';
+$page_title = 'Newsletter - Subscribers';
 require_once __DIR__ . '/includes/header.php';
 ?>
 
@@ -229,9 +229,9 @@ require_once __DIR__ . '/includes/header.php';
 <div class="container-fluid px-4 py-3">
     <div class="subscribers-header">
         <h1 class="subscribers-title">
-            <i class="fas fa-users me-2" style="color: #667eea;"></i>Abonnés Newsletter
+            <i class="fas fa-users me-2" style="color: #667eea;"></i>Newsletter Subscribers
         </h1>
-        <p class="text-muted mb-0" style="font-size: 0.875rem;">Gérez vos abonnés à la newsletter</p>
+        <p class="text-muted mb-0" style="font-size: 0.875rem;">Manage your newsletter subscribers</p>
     </div>
 
     <?php if ($success): ?>
@@ -251,26 +251,26 @@ require_once __DIR__ . '/includes/header.php';
     <div class="filters-bar">
         <div class="d-flex gap-2 flex-wrap">
             <a href="?status=all" class="filter-tab <?php echo $status_filter === 'all' ? 'active' : ''; ?>">
-                <i class="fas fa-users me-1"></i>Tous (<?php echo $counts['total'] ?? 0; ?>)
+                <i class="fas fa-users me-1"></i>All (<?php echo $counts['total'] ?? 0; ?>)
             </a>
             <a href="?status=active" class="filter-tab <?php echo $status_filter === 'active' ? 'active' : ''; ?>">
-                <i class="fas fa-check me-1"></i>Actifs (<?php echo $counts['active_count'] ?? 0; ?>)
+                <i class="fas fa-check me-1"></i>Active (<?php echo $counts['active_count'] ?? 0; ?>)
             </a>
             <a href="?status=unsubscribed" class="filter-tab <?php echo $status_filter === 'unsubscribed' ? 'active' : ''; ?>">
-                <i class="fas fa-times me-1"></i>Désabonnés (<?php echo $counts['unsubscribed_count'] ?? 0; ?>)
+                <i class="fas fa-times me-1"></i>Unsubscribed (<?php echo $counts['unsubscribed_count'] ?? 0; ?>)
             </a>
         </div>
         
         <a href="?export=csv" class="action-btn" style="background: #10b981; color: white; border-color: #10b981;">
-            <i class="fas fa-download"></i>Exporter CSV
+            <i class="fas fa-download"></i>Export CSV
         </a>
     </div>
 
     <?php if (empty($subscribers)): ?>
     <div class="text-center py-5">
         <i class="fas fa-users" style="font-size: 3rem; color: #9ca3af; opacity: 0.5; margin-bottom: 1rem;"></i>
-        <h5 class="text-muted">Aucun abonné trouvé</h5>
-        <p class="text-muted">Les abonnés apparaîtront ici</p>
+        <h5 class="text-muted">No subscribers found</h5>
+        <p class="text-muted">Subscribers will appear here</p>
     </div>
     <?php else: ?>
     <?php foreach ($subscribers as $sub): ?>
@@ -280,12 +280,12 @@ require_once __DIR__ . '/includes/header.php';
                 <i class="fas fa-envelope me-2" style="color: #667eea;"></i>
                 <?php echo htmlspecialchars($sub['email']); ?>
                 <span class="status-badge badge-<?php echo $sub['status']; ?> ms-2">
-                    <?php echo $sub['status'] === 'active' ? 'Actif' : 'Désabonné'; ?>
+                    <?php echo $sub['status'] === 'active' ? 'Active' : 'Unsubscribed'; ?>
                 </span>
             </div>
             <div class="subscriber-meta">
                 <i class="fas fa-calendar me-1"></i>
-                Inscrit le <?php echo date('d/m/Y à H:i', strtotime($sub['subscribed_at'])); ?>
+                Subscribed on <?php echo date('d/m/Y \a\t H:i', strtotime($sub['subscribed_at'])); ?>
                 <?php if ($sub['ip_address']): ?>
                     <span class="mx-2">•</span>
                     <i class="fas fa-globe me-1"></i><?php echo htmlspecialchars($sub['ip_address']); ?>
@@ -299,13 +299,13 @@ require_once __DIR__ . '/includes/header.php';
                class="action-btn btn-unsubscribe"
                data-id="<?php echo $sub['id']; ?>"
                data-email="<?php echo htmlspecialchars($sub['email']); ?>"
-               title="Désabonner">
+               title="Unsubscribe">
                 <i class="fas fa-user-slash"></i>
             </a>
             <?php else: ?>
-            <a href="?reactivate=<?php echo $sub['id']; ?>" 
-               class="action-btn"
-               title="Réactiver">
+                <a href="?reactivate=<?php echo $sub['id']; ?>" 
+                    class="action-btn"
+                    title="Reactivate">
                 <i class="fas fa-user-check"></i>
             </a>
             <?php endif; ?>
@@ -314,7 +314,7 @@ require_once __DIR__ . '/includes/header.php';
                class="action-btn danger btn-delete-subscriber"
                data-id="<?php echo $sub['id']; ?>"
                data-email="<?php echo htmlspecialchars($sub['email']); ?>"
-               title="Supprimer">
+               title="Delete subscriber">
                 <i class="fas fa-trash"></i>
             </a>
         </div>
@@ -335,14 +335,14 @@ document.querySelectorAll('.btn-delete-subscriber').forEach(btn => {
         const url = this.href;
         
         Swal.fire({
-            title: 'Supprimer ?',
+            title: 'Delete?',
             html: `<p class="small">${email}</p>`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#dc3545',
             cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Oui',
-            cancelButtonText: 'Non',
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
             reverseButtons: true,
             width: '350px',
             padding: '1.5rem'
@@ -362,14 +362,14 @@ document.querySelectorAll('.btn-unsubscribe').forEach(btn => {
         const url = this.href;
         
         Swal.fire({
-            title: 'Désabonner ?',
+            title: 'Unsubscribe?',
             html: `<p class="small">${email}</p>`,
             icon: 'question',
             showCancelButton: true,
             confirmButtonColor: '#ffc107',
             cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Oui',
-            cancelButtonText: 'Non',
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
             reverseButtons: true,
             width: '350px',
             padding: '1.5rem'

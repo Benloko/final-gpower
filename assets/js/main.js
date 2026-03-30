@@ -117,3 +117,77 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// Offcanvas manual fallback: ensure mobile menu opens even if Bootstrap fails to initialize
+document.addEventListener('DOMContentLoaded', function() {
+    const togglers = document.querySelectorAll('[data-bs-toggle="offcanvas"]');
+    togglers.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = this.getAttribute('data-bs-target') || this.getAttribute('data-target');
+            if (!target) return;
+            const panel = document.querySelector(target);
+            if (!panel) return;
+
+            // If panel is already shown, hide it
+            if (panel.classList.contains('show')) {
+                panel.classList.remove('show');
+                document.body.classList.remove('offcanvas-open');
+                const bd = document.querySelector('.offcanvas-backdrop'); if (bd) bd.remove();
+                this.setAttribute('aria-expanded', 'false');
+                panel.setAttribute('aria-hidden', 'true');
+                return;
+            }
+
+            // Show the panel immediately
+            panel.classList.add('show');
+            panel.setAttribute('aria-hidden', 'false');
+            this.setAttribute('aria-expanded', 'true');
+
+            // Add backdrop if missing
+            if (!document.querySelector('.offcanvas-backdrop')) {
+                const backdrop = document.createElement('div');
+                backdrop.className = 'offcanvas-backdrop fade show';
+                document.body.appendChild(backdrop);
+            }
+
+            // Prevent body scroll
+            document.body.classList.add('offcanvas-open');
+        });
+    });
+
+    // Close manual offcanvas when clicking backdrop or close buttons
+    document.addEventListener('click', function(e) {
+        if (e.target.matches('.offcanvas-backdrop')) {
+            document.querySelectorAll('.offcanvas.show').forEach(p => p.classList.remove('show'));
+            document.body.classList.remove('offcanvas-open');
+            const bd = document.querySelector('.offcanvas-backdrop'); if (bd) bd.remove();
+        }
+        if (e.target.matches('[data-bs-dismiss="offcanvas"]') || e.target.closest('[data-bs-dismiss="offcanvas"]')) {
+            document.querySelectorAll('.offcanvas.show').forEach(p => p.classList.remove('show'));
+            document.body.classList.remove('offcanvas-open');
+            const bd = document.querySelector('.offcanvas-backdrop'); if (bd) bd.remove();
+        }
+    });
+    
+    // Make entire product card clickable (except interactive children like buttons/links)
+    document.querySelectorAll('.product-card[data-href]').forEach(card => {
+        // Visual affordance
+        card.style.cursor = 'pointer';
+
+        card.addEventListener('click', function(e) {
+            // If click inside an interactive element, do nothing
+            if (e.target.closest('a') || e.target.closest('button') || e.target.closest('input') || e.target.closest('.product-contact') ) {
+                return;
+            }
+            const href = this.getAttribute('data-href');
+            if (href) {
+                window.location.href = href;
+            }
+        });
+    });
+
+    // Language selector removed — site is English-only.
+    // No-op placeholder to keep file structure consistent.
+
+});

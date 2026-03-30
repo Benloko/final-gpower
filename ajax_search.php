@@ -1,5 +1,6 @@
 <?php
 require_once 'config/config.php';
+require_once __DIR__ . '/includes/helpers.php';
 
 header('Content-Type: application/json');
 
@@ -34,7 +35,7 @@ try {
             $product['image_url'] = null;
         }
         $product['url'] = BASE_URL . '/product-details.php?id=' . $product['id'];
-        $product['formatted_price'] = number_format($product['price'], 0, ',', ' ') . ' FCFA';
+        $product['formatted_price'] = format_price($product['price']);
     }
     
     echo json_encode($products);

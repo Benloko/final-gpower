@@ -95,6 +95,194 @@ body {
     box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3) !important;
 }
 
+
+/* Ensure header items (logo, whatsapp, toggler) never wrap on small screens */
+@media (max-width: 767.98px) {
+    .header nav .container {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        flex-wrap: nowrap !important;
+        gap: 0.5rem !important;
+    }
+
+    /* Brand (logo + text) stays left and doesn't shrink too much */
+    .header nav .navbar-brand {
+        flex: 0 0 auto !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+        min-width: 0;
+    }
+
+    /* Center nav (desktop links) can shrink/hide; keep it from forcing wrap */
+    .header nav .d-none.d-lg-flex {
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+        justify-content: center !important;
+        overflow: hidden !important;
+    }
+
+    /* Controls (language, whatsapp, toggler) stay on one line */
+    .header nav .d-flex.align-items-center.gap-2 {
+        flex: 0 0 auto !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+        white-space: nowrap !important;
+    }
+
+    /* Make WhatsApp button compact to avoid wrapping on narrow screens */
+    .btn-whatsapp-desktop {
+        padding: 0.45rem 0.7rem !important;
+        font-size: 0.9rem !important;
+        min-width: 0 !important;
+        white-space: nowrap !important;
+    }
+
+    /* Reduce brand text size slightly on very small devices */
+    @media (max-width: 420px) {
+        .brand-text {
+            font-size: 1rem !important;
+        }
+        .btn-whatsapp-desktop {
+            font-size: 0.85rem !important;
+            padding: 0.38rem 0.6rem !important;
+        }
+    }
+}
+
+/* Hide desktop language buttons on mobile and show a mobile select inside offcanvas */
+@media (max-width: 991.98px) {
+    .gt-desktop { display: none !important; }
+    .gt-mobile-select { display: block !important; }
+}
+
+@media (min-width: 992px) {
+    .gt-mobile-select { display: none !important; }
+}
+
+/* Polished offcanvas styling for a professional mobile menu */
+@media (max-width: 991.98px) {
+    .offcanvas.offcanvas-start {
+        border-top-right-radius: 12px !important;
+        border-bottom-right-radius: 12px !important;
+        box-shadow: 0 12px 40px rgba(13, 38, 76, 0.12) !important;
+          /* Background image for a more professional look. Placed image at `assets/images/menu-bg.jpeg`.
+              Use a path relative to this CSS file so it works both locally and on the server. */
+          background: linear-gradient(180deg, rgba(3,37,65,0.55) 0%, rgba(3,37,65,0.35) 100%), url('../images/menu-bg.jpeg') center/cover no-repeat !important;
+        padding: 0 !important;
+        transition: transform .32s cubic-bezier(.2,.9,.3,1), opacity .25s ease !important;
+        /* Slightly narrower on very small screens to avoid feeling too wide */
+        width: 78% !important;
+        max-width: 320px !important;
+    }
+
+    .offcanvas.offcanvas-start .offcanvas-header {
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.75rem !important;
+        padding: 1rem 1rem !important;
+    }
+
+    .offcanvas .brand-text {
+        font-weight: 800 !important;
+        font-size: 1.05rem !important;
+        color: #ffffff !important;
+    }
+
+    /* Cleaner close button */
+    .offcanvas .btn-close {
+        background: rgba(255,255,255,0.12) !important;
+        border-radius: 8px !important;
+        width: 36px !important;
+        height: 36px !important;
+        border: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-shadow: 0 6px 16px rgba(2,6,23,0.06) !important;
+        padding: 0 !important;
+        position: relative !important;
+        backdrop-filter: blur(4px) !important;
+    }
+
+    /* Replace Bootstrap's SVG close with a centered × for better scaling */
+    .offcanvas .btn-close::before {
+        content: '\00d7';
+        font-size: 18px !important;
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        line-height: 1 !important;
+        display: block !important;
+        transform: none !important;
+    }
+
+    /* Menu body with subtle sections */
+    .offcanvas .offcanvas-body {
+        padding: 0.5rem 0.75rem 2rem 0.75rem !important;
+        background: transparent !important;
+    }
+
+    .offcanvas .navbar-nav {
+        margin-top: 0.25rem !important;
+    }
+
+    .offcanvas .navbar-nav .nav-link {
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.75rem !important;
+        padding: 0.9rem 0.9rem !important;
+        background: #ffffff !important;
+        border-radius: 10px !important;
+        margin-bottom: 0.6rem !important;
+        color: #0b1220 !important;
+        box-shadow: 0 6px 16px rgba(2,6,23,0.04) !important;
+        transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+    }
+
+    .offcanvas .navbar-nav .nav-link i {
+        font-size: 1.05rem !important;
+        color: var(--primary-color) !important;
+        min-width: 26px !important;
+        text-align: center !important;
+    }
+
+    .offcanvas .navbar-nav .nav-link:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 30px rgba(2,6,23,0.06) !important;
+        background: linear-gradient(90deg, rgba(37,99,235,0.06), rgba(99,102,241,0.02)) !important;
+        color: var(--primary-color) !important;
+    }
+
+    .offcanvas .navbar-nav .nav-link.active {
+        background: linear-gradient(90deg, rgba(var(--primary-rgb),0.12), rgba(59,130,246,0.04)) !important;
+        border: 1px solid rgba(var(--primary-rgb),0.06) !important;
+    }
+
+    /* Small utility area (WhatsApp CTA + language) */
+    .offcanvas .mobile-footer-nav {
+        margin-top: 1rem !important;
+        padding: 1rem !important;
+        background: #ffffff !important;
+        border-radius: 12px !important;
+        box-shadow: 0 12px 30px rgba(2,6,23,0.04) !important;
+    }
+
+    .offcanvas .mobile-footer-nav .btn-whatsapp-header {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+        padding: 0.6rem 0.9rem !important;
+        border-radius: 999px !important;
+    }
+
+    /* Make the first nav link slightly larger for emphasis */
+    .offcanvas .navbar-nav .nav-link:first-of-type {
+        font-weight: 700 !important;
+        font-size: 1.02rem !important;
+    }
+}
 /* Language Switcher */
 .dropdown-menu {
     padding: 0.5rem;
@@ -290,12 +478,21 @@ body {
 /* Ensure Bootstrap offcanvas behaves predictably on our site (fix visibility/width/z-index issues) */
 @media (max-width: 991.98px) {
     .offcanvas.offcanvas-start {
-        width: 85% !important;
-        max-width: 340px !important;
+        /* Narrower default so panel doesn't feel full-width on small devices */
+        width: 78% !important;
+        max-width: 320px !important;
         background: #ffffff !important;
         z-index: 1075 !important;
         box-shadow: 2px 0 30px rgba(0,0,0,0.18) !important;
         transition: transform .25s ease-in-out !important;
+    }
+
+    /* Very small devices (older phones): make it even narrower */
+    @media (max-width: 360px) {
+        .offcanvas.offcanvas-start {
+            width: 72% !important;
+            max-width: 300px !important;
+        }
     }
 
     .offcanvas.offcanvas-start.show {
@@ -611,6 +808,11 @@ body {
     position: relative;
     overflow: hidden;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+/* Visual affordance: product card clickable */
+.product-card {
+    cursor: pointer;
 }
 
 /* Homepage product card tweaks to match requested design */
@@ -1296,6 +1498,9 @@ body {
 .social-icon-btn.instagram:hover { background: #E4405F; border-color: #E4405F; }
 .social-icon-btn.linkedin:hover { background: #0A66C2; border-color: #0A66C2; }
 .social-icon-btn.whatsapp:hover { background: #25D366; border-color: #25D366; }
+/* New social hover colors */
+.social-icon-btn.tiktok:hover { background: #010101; border-color: #010101; }
+.social-icon-btn.twitter:hover { background: #1DA1F2; border-color: #1DA1F2; color: #ffffff; }
 
 .newsletter-input-wrapper input:focus {
     box-shadow: 0 0 0 4px rgba(var(--primary-rgb), 0.15) !important;
@@ -1518,4 +1723,294 @@ body {
 
 .hover-border-primary:hover {
     border-color: var(--primary-color) !important;
+}
+
+/* Fix: Ensure mobile offcanvas displays full content and is scrollable */
+@media (max-width: 991.98px) {
+    /* Make offcanvas occupy full viewport height and be on top */
+    .offcanvas.offcanvas-start {
+        height: 100vh !important;
+        top: 0 !important;
+        left: 0 !important;
+        transform: translateX(0) !important; /* ensure visible when toggled */
+        visibility: visible !important;
+        z-index: 2000 !important;
+        overflow-y: auto !important;
+    }
+
+    /* When hidden, keep the transformed position but allow our manual fallback to work */
+    .offcanvas.offcanvas-start:not(.show) {
+        transform: translateX(-100%) !important;
+        visibility: hidden !important;
+    }
+
+    /* Ensure header and body inside offcanvas are stacked vertically */
+    .offcanvas .offcanvas-header {
+        flex: 0 0 auto;
+        padding: 1rem 1.25rem;
+        background: transparent;
+        border-bottom: 1px solid #eef2ff;
+    }
+
+    .offcanvas .offcanvas-body {
+        flex: 1 1 auto;
+        padding: 1rem !important;
+        display: block !important;
+        height: calc(100vh - 72px) !important; /* leave room for header */
+        overflow-y: auto !important;
+    }
+
+    /* Make nav links visible and stacked */
+    .offcanvas .navbar-nav {
+        display: block !important;
+    }
+
+    .offcanvas .navbar-nav .nav-item {
+        margin-bottom: 0.5rem;
+    }
+
+    .offcanvas .navbar-nav .nav-link {
+        color: #111827 !important;
+        background: transparent !important;
+        padding: 0.9rem 1rem !important;
+        font-size: 1rem !important;
+        border-radius: 0.5rem;
+        display: block !important;
+    }
+
+    .offcanvas .navbar-nav .nav-link .whatsapp-label {
+        display: inline-block !important;
+    }
+}
+
+/* ========================================
+   STOCK & INVENTORY STYLES
+   ======================================== */
+
+/* Stock Status Badges */
+.stock-badge {
+    border-radius: 12px;
+    padding: 1rem;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stock-badge:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.stock-badge.in-stock {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.stock-badge.limited-stock {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.stock-badge.out-of-stock {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.stock-badge i {
+    font-size: 1.75rem;
+    color: white;
+    margin-bottom: 0.5rem;
+}
+
+.stock-badge h6 {
+    color: white;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+}
+
+.stock-badge .quantity {
+    color: white;
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+.stock-badge .quantity-unit {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.85rem;
+    margin-left: 0.25rem;
+}
+
+/* ========================================
+   PDF DOWNLOAD BUTTON STYLES
+   ======================================== */
+
+.pdf-download-btn {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 12px !important;
+    text-decoration: none !important;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(245, 87, 108, 0.3);
+}
+
+.pdf-download-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.pdf-download-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(245, 87, 108, 0.4);
+    color: white !important;
+    left: 100%;
+}
+
+.pdf-download-btn:hover::before {
+    left: 100%;
+}
+
+.pdf-download-btn i {
+    display: block;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.pdf-download-btn .btn-text {
+    display: block;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.pdf-download-btn .btn-subtext {
+    display: block;
+    font-size: 0.75rem;
+    opacity: 0.9;
+    margin-top: 0.25rem;
+}
+
+/* ========================================
+   INVENTORY COUNTER STYLES
+   ======================================== */
+
+.inventory-counter {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    padding: 1.5rem;
+    color: white;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.inventory-counter .label {
+    font-size: 0.9rem;
+    opacity: 0.95;
+    margin-bottom: 0.5rem;
+}
+
+.inventory-counter .count {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0.5rem 0;
+}
+
+.inventory-counter .unit {
+    font-size: 0.85rem;
+    opacity: 0.9;
+}
+
+/* ========================================
+   PRODUCT DETAILS ENHANCEMENTS
+   ======================================== */
+
+.product-info-section {
+    background: white;
+    border-radius: 16px;
+    padding: 1.75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1.5rem;
+}
+
+.product-price {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 0.5rem;
+}
+
+.product-unit-price {
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin-top: 0.5rem;
+}
+
+/* Stock display enhancement */
+.product-stock-display {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: #f3f4f6;
+    border-radius: 8px;
+    margin: 0.75rem 0;
+}
+
+.product-stock-display i {
+    color: #667eea;
+    font-size: 1rem;
+}
+
+.product-stock-display .quantity {
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+/* ========================================
+   RESPONSIVE ADJUSTMENTS
+   ======================================== */
+
+@media (max-width: 768px) {
+    .stock-badge {
+        min-height: 110px;
+        padding: 0.75rem;
+    }
+    
+    .stock-badge i {
+        font-size: 1.5rem;
+    }
+    
+    .stock-badge .quantity {
+        font-size: 1.5rem;
+    }
+    
+    .pdf-download-btn {
+        padding: 0.75rem !important;
+    }
+    
+    .pdf-download-btn i {
+        font-size: 1.25rem;
+    }
+    
+    .pdf-download-btn .btn-text {
+        font-size: 0.85rem;
+    }
+    
+    .inventory-counter {
+        padding: 1rem;
+    }
+    
+    .inventory-counter .count {
+        font-size: 1.75rem;
+    }
 }

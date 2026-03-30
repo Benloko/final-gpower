@@ -1,26 +1,22 @@
 <?php
-// Language handler
+// Simplified language handler: force English-only per project configuration.
 require_once __DIR__ . '/../config/config.php';
 
-// Get current language from session or default
-$current_lang = isset($_SESSION['language']) ? $_SESSION['language'] : DEFAULT_LANG;
+// Force English
+$current_lang = 'en';
 
-// Load language file
-$lang_file = __DIR__ . '/../lang/' . $current_lang . '.php';
+// Load English language file
+$lang_file = __DIR__ . '/../lang/en.php';
 if (file_exists($lang_file)) {
     require_once $lang_file;
 } else {
-    require_once __DIR__ . '/../lang/en.php';
+    // Minimal fallback translations
+    $lang = [];
 }
 
-// Function to get translation
 function t($key) {
     global $lang;
     return isset($lang[$key]) ? $lang[$key] : $key;
 }
 
-// Function to change language
-function changeLanguage($new_lang) {
-    $_SESSION['language'] = $new_lang;
-}
 ?>

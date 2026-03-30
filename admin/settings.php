@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $site_phone = sanitize($_POST['site_phone']);
         
         if (empty($site_name) || empty($site_email)) {
-            $error = 'Le nom du site et l\'email sont requis';
+            $error = 'Site name and email are required';
         } else {
             $settings_to_update = [
                 'site_name' => $site_name,
@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $stmt->execute([$value, $key]);
             }
             
-            $success = 'Paramètres généraux mis à jour avec succès!';
+            $success = 'General settings updated successfully!';
         }
     }
     
@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt = $pdo->prepare("UPDATE settings SET setting_value = ? WHERE setting_key = ?");
         $stmt->execute([$whatsapp_number, 'whatsapp_number']);
         
-        $success = 'Numéro WhatsApp mis à jour avec succès!';
+        $success = 'WhatsApp number updated successfully!';
     }
     
     // Handle Password Change
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $new_username = isset($_POST['new_username']) ? sanitize($_POST['new_username']) : '';
         
         if (empty($current_password)) {
-            $error = 'Le mot de passe actuel est requis';
+            $error = 'Current password is required';
         } else {
             // Verify current password
             $stmt = $pdo->prepare("SELECT password, username FROM admins WHERE id = ?");
@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $admin = $stmt->fetch();
             
             if (!password_verify($current_password, $admin['password'])) {
-                $error = 'Mot de passe actuel incorrect';
+                $error = 'Current password incorrect';
             } else {
                 $updateFields = [];
                 $updateValues = [];
@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $checkStmt = $pdo->prepare("SELECT COUNT(*) FROM admins WHERE username = ? AND id != ?");
                     $checkStmt->execute([$new_username, $_SESSION['admin_id']]);
                     if ($checkStmt->fetchColumn() > 0) {
-                        $error = 'Ce nom d\'utilisateur est déjà utilisé';
+                        $error = 'This username is already taken';
                     } else {
                         $updateFields[] = "username = ?";
                         $updateValues[] = $new_username;
@@ -78,11 +78,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 }
                 
                 // Update password if provided
-                if (!empty($new_password)) {
+                    if (!empty($new_password)) {
                     if ($new_password !== $confirm_password) {
-                        $error = 'Les mots de passe ne correspondent pas';
+                        $error = 'Passwords do not match';
                     } elseif (strlen($new_password) < 6) {
-                        $error = 'Le mot de passe doit contenir au moins 6 caractères';
+                        $error = 'Password must be at least 6 characters';
                     } else {
                         $updateFields[] = "password = ?";
                         $updateValues[] = password_hash($new_password, PASSWORD_DEFAULT);
@@ -96,9 +96,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $stmt = $pdo->prepare($sql);
                     $stmt->execute($updateValues);
                     
-                    $success = 'Informations mises à jour avec succès!';
+                    $success = 'Information updated successfully!';
                 } elseif (empty($error) && empty($updateFields)) {
-                    $error = 'Aucune modification à enregistrer';
+                    $error = 'No changes to save';
                 }
             }
         }
@@ -125,8 +125,8 @@ require_once __DIR__ . '/includes/header.php';
 <div class="mb-4">
     <div class="d-flex justify-content-between align-items-center">
         <div>
-            <h4 class="mb-1 fw-bold text-dark">Paramètres</h4>
-            <p class="text-muted small mb-0">Gérer les paramètres de votre site</p>
+            <h4 class="mb-1 fw-bold text-dark">Settings</h4>
+            <p class="text-muted small mb-0">Manage your site settings</p>
         </div>
     </div>
 </div>
@@ -162,8 +162,8 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
                     <i class="fas fa-chevron-right text-muted" style="font-size: 0.8rem;"></i>
                 </div>
-                <h6 class="fw-bold mb-2">Paramètres Généraux</h6>
-                <p class="text-muted small mb-0">Nom du site, email, téléphone</p>
+                <h6 class="fw-bold mb-2">General Settings</h6>
+                <p class="text-muted small mb-0">Site name, email, phone</p>
             </div>
         </div>
     </div>
@@ -178,8 +178,8 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
                     <i class="fas fa-chevron-right text-muted" style="font-size: 0.8rem;"></i>
                 </div>
-                <h6 class="fw-bold mb-2">Contact WhatsApp</h6>
-                <p class="text-muted small mb-0">Numéro WhatsApp pour contact</p>
+                <h6 class="fw-bold mb-2">WhatsApp Contact</h6>
+                <p class="text-muted small mb-0">WhatsApp number for contact</p>
             </div>
         </div>
     </div>
@@ -194,8 +194,8 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
                     <i class="fas fa-chevron-right text-muted" style="font-size: 0.8rem;"></i>
                 </div>
-                <h6 class="fw-bold mb-2">Mot de passe</h6>
-                <p class="text-muted small mb-0">Changer votre mot de passe</p>
+                <h6 class="fw-bold mb-2">Password</h6>
+                <p class="text-muted small mb-0">Change your password</p>
             </div>
         </div>
     </div>
@@ -210,8 +210,8 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
                     <i class="fas fa-chevron-right text-muted" style="font-size: 0.8rem;"></i>
                 </div>
-                <h6 class="fw-bold mb-2">Nom d'utilisateur</h6>
-                <p class="text-muted small mb-0">Modifier votre identifiant</p>
+                <h6 class="fw-bold mb-2">Username</h6>
+                <p class="text-muted small mb-0">Change your username</p>
             </div>
         </div>
     </div>
@@ -225,7 +225,7 @@ require_once __DIR__ . '/includes/header.php';
                         <i class="fas fa-info-circle text-white" style="font-size: 1.5rem;"></i>
                     </div>
                 </div>
-                <h6 class="fw-bold mb-2 text-white">Informations Système</h6>
+                <h6 class="fw-bold mb-2 text-white">System Information</h6>
                 <div class="d-flex flex-column gap-1" style="font-size: 0.75rem;">
                     <div class="d-flex justify-content-between text-white opacity-90">
                         <span>PHP:</span>
@@ -252,9 +252,9 @@ require_once __DIR__ . '/includes/header.php';
             <div class="modal-header border-0 pb-2" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
                 <div class="text-white">
                     <h5 class="modal-title fw-bold mb-1">
-                        <i class="fas fa-cog me-2"></i>Paramètres Généraux
+                        <i class="fas fa-cog me-2"></i>General Settings
                     </h5>
-                    <p class="small mb-0 opacity-90">Modifier les informations de base du site</p>
+                    <p class="small mb-0 opacity-90">Edit basic site information</p>
                 </div>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
@@ -263,7 +263,7 @@ require_once __DIR__ . '/includes/header.php';
                 <div class="modal-body p-4">
                     <div class="mb-3">
                         <label class="form-label fw-semibold small mb-2">
-                            <i class="fas fa-building text-primary me-1"></i>Nom du site *
+                            <i class="fas fa-building text-primary me-1"></i>Site Name *
                         </label>
                         <input type="text" 
                                name="site_name" 
@@ -271,12 +271,12 @@ require_once __DIR__ . '/includes/header.php';
                                value="<?php echo htmlspecialchars($settings['site_name'] ?? 'Gpower'); ?>"
                                placeholder="Ex: Gpower"
                                required>
-                        <div class="form-text small">Le nom affiché sur votre site web</div>
+                        <div class="form-text small">The name displayed on your website</div>
                     </div>
                     
                     <div class="mb-3">
                         <label class="form-label fw-semibold small mb-2">
-                            <i class="fas fa-envelope text-primary me-1"></i>Email du site *
+                            <i class="fas fa-envelope text-primary me-1"></i>Site Email *
                         </label>
                         <input type="email" 
                                name="site_email" 
@@ -284,19 +284,19 @@ require_once __DIR__ . '/includes/header.php';
                                value="<?php echo htmlspecialchars($settings['site_email'] ?? ''); ?>"
                                placeholder="contact@gpower.ci"
                                required>
-                        <div class="form-text small">Email principal pour les contacts</div>
+                        <div class="form-text small">Primary contact email</div>
                     </div>
                     
                     <div class="mb-0">
                         <label class="form-label fw-semibold small mb-2">
-                            <i class="fas fa-phone text-primary me-1"></i>Téléphone du site
+                            <i class="fas fa-phone text-primary me-1"></i>Site Phone
                         </label>
                         <input type="text" 
                                name="site_phone" 
                                class="form-control form-control-lg border-1 rounded-3" 
                                value="<?php echo htmlspecialchars($settings['site_phone'] ?? ''); ?>"
                                placeholder="+225 XX XX XX XX XX">
-                        <div class="form-text small">Numéro de téléphone principal (optionnel)</div>
+                        <div class="form-text small">Primary phone number (optional)</div>
                     </div>
                     <input type="hidden" name="whatsapp_number" value="<?php echo htmlspecialchars($settings['whatsapp_number'] ?? ''); ?>">
                 </div>
@@ -320,9 +320,9 @@ require_once __DIR__ . '/includes/header.php';
             <div class="modal-header border-0 pb-2" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
                 <div class="text-white">
                     <h5 class="modal-title fw-bold mb-1">
-                        <i class="fab fa-whatsapp me-2"></i>Contact WhatsApp
+                        <i class="fab fa-whatsapp me-2"></i>WhatsApp Contact
                     </h5>
-                    <p class="small mb-0 opacity-90">Configurer le numéro de contact WhatsApp</p>
+                    <p class="small mb-0 opacity-90">Set the contact WhatsApp number</p>
                 </div>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
@@ -332,14 +332,14 @@ require_once __DIR__ . '/includes/header.php';
                     <div class="alert alert-info border-0 rounded-3 d-flex align-items-start" style="background-color: #e7f9f5;">
                         <i class="fas fa-info-circle text-info me-2 mt-1"></i>
                         <div class="small">
-                            <strong>Important:</strong> Entrez votre numéro WhatsApp au format international sans le signe +. 
-                            Par exemple: <code>2250700000000</code> pour la Côte d'Ivoire.
+                            <strong>Important:</strong> Enter your WhatsApp number in international format without the + sign. 
+                            For example: <code>2250700000000</code> for Ivory Coast.
                         </div>
                     </div>
                     
                     <div class="mb-0">
                         <label class="form-label fw-semibold small mb-2">
-                            <i class="fab fa-whatsapp text-success me-1"></i>Numéro WhatsApp
+                            <i class="fab fa-whatsapp text-success me-1"></i>WhatsApp Number
                         </label>
                         <div class="input-group input-group-lg">
                             <span class="input-group-text bg-success bg-opacity-10 border-1">
@@ -355,7 +355,7 @@ require_once __DIR__ . '/includes/header.php';
                         </div>
                         <div class="form-text small mt-2">
                             <i class="fas fa-lightbulb text-warning me-1"></i>
-                            Format: Code pays + numéro sans espaces ni symboles
+                            Format: Country code + number without spaces or symbols
                         </div>
                     </div>
                     <input type="hidden" name="site_name" value="<?php echo htmlspecialchars($settings['site_name'] ?? 'Gpower'); ?>">
@@ -364,10 +364,10 @@ require_once __DIR__ . '/includes/header.php';
                 </div>
                 <div class="modal-footer border-0 bg-light pt-3 pb-3">
                     <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">
-                        <i class="fas fa-times me-2"></i>Annuler
+                        <i class="fas fa-times me-2"></i>Cancel
                     </button>
                     <button type="submit" class="btn btn-success rounded-pill px-4 shadow-sm">
-                        <i class="fas fa-save me-2"></i>Enregistrer
+                        <i class="fas fa-save me-2"></i>Save
                     </button>
                 </div>
             </form>
@@ -382,7 +382,7 @@ require_once __DIR__ . '/includes/header.php';
             <div class="modal-header border-0" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);">
                 <div class="text-white">
                     <h5 class="modal-title fw-bold mb-0">
-                        <i class="fas fa-key me-2"></i>Mot de passe
+                        <i class="fas fa-key me-2"></i>Password
                     </h5>
                 </div>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -392,36 +392,36 @@ require_once __DIR__ . '/includes/header.php';
                 <div class="modal-body p-4">
                     <div class="mb-3">
                         <label class="form-label fw-semibold small mb-2">
-                            <i class="fas fa-lock text-danger me-1"></i>Mot de passe actuel *
+                            <i class="fas fa-lock text-danger me-1"></i>Current password *
                         </label>
                         <input type="password" 
                                name="current_password" 
                                class="form-control rounded-3"
-                               placeholder="Mot de passe actuel"
+                               placeholder="Current password"
                                required>
                     </div>
                     
                     <div class="mb-3">
                         <label class="form-label fw-semibold small mb-2">
-                            <i class="fas fa-key text-success me-1"></i>Nouveau mot de passe
+                            <i class="fas fa-key text-success me-1"></i>New password
                         </label>
                         <input type="password" 
                                name="new_password" 
                                class="form-control rounded-3"
-                               placeholder="Nouveau mot de passe"
+                               placeholder="New password"
                                minlength="6"
                                required>
-                        <div class="form-text small">Minimum 6 caractères</div>
+                        <div class="form-text small">Minimum 6 characters</div>
                     </div>
                     
                     <div class="mb-0">
                         <label class="form-label fw-semibold small mb-2">
-                            <i class="fas fa-check-circle text-success me-1"></i>Confirmer
+                            <i class="fas fa-check-circle text-success me-1"></i>Confirm
                         </label>
                         <input type="password" 
                                name="confirm_password" 
                                class="form-control rounded-3"
-                               placeholder="Retapez le mot de passe"
+                               placeholder="Retype password"
                                minlength="6"
                                required>
                     </div>
@@ -429,10 +429,10 @@ require_once __DIR__ . '/includes/header.php';
                 
                 <div class="modal-footer border-0 pt-0 pb-3 px-4">
                     <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">
-                        <i class="fas fa-times me-2"></i>Annuler
+                        <i class="fas fa-times me-2"></i>Cancel
                     </button>
                     <button type="submit" class="btn text-white rounded-pill px-4 shadow-sm" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);">
-                        <i class="fas fa-save me-2"></i>Modifier
+                        <i class="fas fa-save me-2"></i>Change
                     </button>
                 </div>
             </form>
@@ -446,8 +446,8 @@ require_once __DIR__ . '/includes/header.php';
         <div class="modal-content border-0 shadow-lg rounded-4">
             <div class="modal-header border-0" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
                 <div class="text-white">
-                    <h5 class="modal-title fw-bold mb-0">
-                        <i class="fas fa-user-edit me-2"></i>Nom d'utilisateur
+                        <h5 class="modal-title fw-bold mb-0">
+                        <i class="fas fa-user-edit me-2"></i>Username
                     </h5>
                 </div>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -457,7 +457,7 @@ require_once __DIR__ . '/includes/header.php';
                 <div class="modal-body p-4">
                     <div class="mb-3">
                         <label class="form-label fw-semibold small mb-2">
-                            <i class="fas fa-user text-muted me-1"></i>Actuel
+                            <i class="fas fa-user text-muted me-1"></i>Current
                         </label>
                         <input type="text" 
                                class="form-control rounded-3"
@@ -468,12 +468,12 @@ require_once __DIR__ . '/includes/header.php';
                     
                     <div class="mb-3">
                         <label class="form-label fw-semibold small mb-2">
-                            <i class="fas fa-user-edit text-info me-1"></i>Nouveau nom *
+                            <i class="fas fa-user-edit text-info me-1"></i>New username *
                         </label>
                         <input type="text" 
                                name="new_username" 
                                class="form-control rounded-3"
-                               placeholder="Nouveau nom d'utilisateur"
+                               placeholder="New username"
                                required>
                     </div>
                     

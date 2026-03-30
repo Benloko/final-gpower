@@ -28,6 +28,8 @@ if (!$product) {
     redirect(BASE_URL . '/');
 }
 
+// No server-side product translations used — product content is authored in English only.
+
 // Parse specifications text into labeled pairs when possible.
 $spec_text = trim((string)($product['specifications'] ?? ''));
 $parsed_specs = []; // associative label => value
@@ -63,7 +65,7 @@ $product_images = $stmt->fetchAll();
     <?php if ($from_admin): ?>
     <div class="mb-3">
         <a href="<?php echo BASE_URL; ?>/admin/product-edit.php?id=<?php echo $product_id; ?>" class="btn btn-outline-secondary btn-sm rounded-pill">
-            <i class="fas fa-arrow-left me-1"></i>Retour à l'édition
+            <i class="fas fa-arrow-left me-1"></i>Back to edit
         </a>
     </div>
     <?php endif; ?>
@@ -124,15 +126,15 @@ $product_images = $stmt->fetchAll();
                     <!-- Price -->
                     <div class="mb-4">
                         <div class="fw-bold mb-1" style="font-size: 2rem; color: #000;">
-                            <?php echo number_format($product['price'], 0, ',', ' '); ?> FCFA
+                            <?php echo format_price($product['price']); ?>
                         </div>
-                        <small class="text-muted">Prix unitaire</small>
+                        <small class="text-muted"><?php echo t('unit_price'); ?></small>
                     </div>
                     
                     <!-- Units Available -->
                     <div class="d-flex align-items-center gap-2 mb-2 text-muted">
                         <i class="fas fa-boxes"></i>
-                        <span><strong><?php echo number_format((int)$product['quantity']); ?></strong> unité(s) disponible(s)</span>
+                        <span><strong><?php echo number_format((int)$product['quantity']); ?></strong> <?php echo t('units_available'); ?></span>
                     </div>
                     
                     <!-- Total Stock Value -->
@@ -142,20 +144,28 @@ $product_images = $stmt->fetchAll();
                     ?>
                     <div class="d-flex align-items-center gap-2 mb-3 text-muted">
                         <i class="fas fa-wallet"></i>
-                        <span><strong><?php echo number_format($total_stock_value, 0, ',', ' '); ?> FCFA</strong> valeur totale du stock</span>
+                        <span><strong><?php echo format_price($total_stock_value); ?></strong> <?php echo t('total_stock_value'); ?></span>
                     </div>
                     <?php endif; ?>
                     
                     <!-- Location -->
                     <div class="d-flex align-items-center gap-2 mb-4 text-muted">
                         <i class="fas fa-map-marker-alt"></i>
-                        <span><?php echo htmlspecialchars($product['location'] ?? 'Non spécifié'); ?></span>
+                        <span><?php echo htmlspecialchars($product['location'] ?? 'Not specified'); ?></span>
                     </div>
+
+                    <!-- Product Identification Number -->
+                    <?php if ($product['identification_number'] ?? false): ?>
+                    <div class="d-flex align-items-center gap-2 mb-4 text-muted">
+                        <i class="fas fa-barcode"></i>
+                        <span><strong><?php echo htmlspecialchars($product['identification_number']); ?></strong></span>
+                    </div>
+                    <?php endif; ?>
                     
                     <!-- Action Buttons -->
                     <div class="row g-2 mb-4">
                         <div class="col-6">
-                            <a href="https://wa.me/<?php echo $settings['whatsapp_number']; ?>?text=<?php echo urlencode('Bonjour, je suis intéressé par ' . $product['name']); ?>" 
+                                     <a href="https://wa.me/<?php echo $settings['whatsapp_number']; ?>?text=<?php echo urlencode('Hello, I am interested in ' . $product['name']); ?>" 
                                class="btn btn-dark w-100 rounded-4 d-flex align-items-center justify-content-center gap-2 shadow-sm"
                                target="_blank"
                                style="background: #25D366; border: none; padding: 0.6rem 1rem; font-size: 0.9rem;">
@@ -165,13 +175,67 @@ $product_images = $stmt->fetchAll();
                         </div>
                         
                         <div class="col-6">
-                            <a href="mailto:<?php echo $settings['site_email'] ?? 'contact@gpower.ci'; ?>?subject=<?php echo urlencode('Demande: ' . $product['name']); ?>&body=<?php echo urlencode('Bonjour, je souhaite obtenir plus d\'informations sur ' . $product['name'] . ' au prix de ' . number_format($product['price'], 0, ',', ' ') . ' FCFA.'); ?>" 
+                                     <a href="mailto:<?php echo $settings['site_email'] ?? 'contact@gpower.ci'; ?>?subject=<?php echo urlencode('Inquiry: ' . $product['name']); ?>&body=<?php echo urlencode('Hello, I would like more information about ' . $product['name'] . ' priced at ' . format_price($product['price']) . '.'); ?>" 
                                class="btn btn-dark w-100 rounded-4 d-flex align-items-center justify-content-center gap-2 shadow-sm"
                                style="padding: 0.6rem 1rem; font-size: 0.9rem;">
                                 <i class="fas fa-envelope"></i>
                                 <span class="fw-bold">Email</span>
                             </a>
                         </div>
+                    </div>
+
+                    <!-- Stock Status & PDF Section -->
+                    <div class="row g-2 mb-4">
+                        <!-- Stock Status Badge -->
+                        <div class="col-md-6">
+                            <div class="p-3 rounded-3 text-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); position: relative; overflow: hidden;">
+                                <div style="position: absolute; top: -50%; right: -50%; width: 200px; height: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 50%;"></div>
+                                <div style="position: relative; z-index: 1;">
+                                    <div class="mb-2">
+                                        <?php 
+                                        $quantity = (int)$product['quantity'];
+                                        if ($quantity > 10) {
+                                            $badge_color = '#10b981'; // green
+                                            $badge_text = 'In Stock';
+                                            $badge_icon = 'check-circle';
+                                        } elseif ($quantity > 0) {
+                                            $badge_color = '#f59e0b'; // amber
+                                            $badge_text = 'Limited Stock';
+                                            $badge_icon = 'exclamation-circle';
+                                        } else {
+                                            $badge_color = '#ef4444'; // red
+                                            $badge_text = 'Out of Stock';
+                                            $badge_icon = 'times-circle';
+                                        }
+                                        ?>
+                                        <i class="fas fa-<?php echo $badge_icon; ?>" style="font-size: 1.5rem; color: white;"></i>
+                                    </div>
+                                    <h6 class="fw-bold text-white mb-1" style="font-size: 0.9rem;"><?php echo $badge_text; ?></h6>
+                                    <div class="fw-bold text-white" style="font-size: 1.5rem;">
+                                        <?php echo number_format($quantity); ?>
+                                        <span style="font-size: 0.85rem; opacity: 0.9;">units</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PDF Download Section -->
+                        <?php if ($product['pdf_file'] ?? false): ?>
+                        <div class="col-md-6">
+                            <a href="<?php echo BASE_URL; ?>/uploads/pdfs/<?php echo htmlspecialchars($product['pdf_file']); ?>" 
+                               class="btn w-100 h-100 rounded-3 d-flex align-items-center justify-content-center flex-column gap-2 shadow-sm"
+                               style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border: none; padding: 1rem; text-decoration: none; transition: transform 0.2s ease;"
+                               onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 16px rgba(245, 87, 108, 0.3)';"
+                               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='';"
+                               download>
+                                <i class="fas fa-file-pdf" style="font-size: 1.5rem;"></i>
+                                <div>
+                                    <div class="fw-bold" style="font-size: 0.9rem;">Product Details</div>
+                                    <small style="opacity: 0.9; font-size: 0.75rem;">Download PDF & Specs</small>
+                                </div>
+                            </a>
+                        </div>
+                        <?php endif; ?>
                     </div>
                     
                     <!-- Specifications -->
@@ -216,7 +280,7 @@ $product_images = $stmt->fetchAll();
                            class="btn btn-outline-dark w-100 rounded-4 d-flex align-items-center justify-content-center gap-2"
                            style="padding: 0.75rem 1rem; font-size: 0.95rem;">
                             <i class="fas fa-arrow-left"></i>
-                            <span class="fw-semibold">Retour à l'accueil</span>
+                            <span class="fw-semibold"><?php echo t('back_home'); ?></span>
                         </a>
                     </div>
                     <?php endif; ?>

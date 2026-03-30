@@ -8,7 +8,7 @@ $pdo = getPDOConnection();
 $success = '';
 $error = '';
 
-// Créer la table si elle n'existe pas
+// Create table if it doesn't exist
 try {
     $pdo->exec("CREATE TABLE IF NOT EXISTS contact_messages (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -24,7 +24,7 @@ try {
         INDEX idx_created (created_at)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 } catch (Exception $e) {
-    $error = "Erreur de base de données: " . $e->getMessage();
+    $error = "Database error: " . $e->getMessage();
 }
 
 // Handle reply submission
@@ -60,22 +60,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reply_message'])) {
             $toName = $message['name'];
             $subject = "Re: " . $message['subject'];
             
-            $email_body = "Bonjour " . $message['name'] . ",\n\n";
-            $email_body .= "Merci pour votre message. Voici notre réponse :\n\n";
+            $email_body = "Hello " . $message['name'] . ",\n\n";
+            $email_body .= "Thank you for your message. Here is our reply:\n\n";
             $email_body .= $reply . "\n\n";
             $email_body .= "---\n";
             $email_body .= "Votre message original :\n";
             $email_body .= $message['message'] . "\n\n";
-            $email_body .= "Cordialement,\n";
-            $email_body .= "L'équipe Gpower";
+            $email_body .= "Best regards,\n";
+            $email_body .= "The Gpower Team";
             
             if (sendEmail($to, $toName, $subject, $email_body, false)) {
-                $success = "Réponse enregistrée et envoyée par email avec succès!";
+                $success = "Reply saved and emailed successfully!";
             } else {
-                $success = "Réponse enregistrée (l'email n'a pas pu être envoyé - vérifiez la configuration SMTP)";
+                $success = "Reply saved (email could not be sent - check SMTP configuration)";
             }
         } catch (Exception $e) {
-            $error = "Erreur: " . $e->getMessage();
+            $error = "Error: " . $e->getMessage();
         }
     }
 }
@@ -88,7 +88,7 @@ if (isset($_GET['mark_read'])) {
         $stmt->execute([$message_id]);
         redirect('messages.php');
     } catch (Exception $e) {
-        $error = "Erreur lors de la mise à jour.";
+        $error = "Error during update.";
     }
 }
 
@@ -98,7 +98,7 @@ if (isset($_GET['delete'])) {
     try {
         $stmt = $pdo->prepare("DELETE FROM contact_messages WHERE id = ?");
         $stmt->execute([$message_id]);
-        $success = "Message supprimé avec succès!";
+        $success = "Message deleted successfully!";
     } catch (Exception $e) {
         $error = "Erreur lors de la suppression.";
     }
@@ -129,7 +129,7 @@ $stmt = $pdo->query("SELECT
 FROM contact_messages");
 $counts = $stmt->fetch();
 
-$page_title = 'Messages de Contact';
+$page_title = 'Contact Messages';
 require_once __DIR__ . '/includes/header.php';
 ?>
 
@@ -410,7 +410,7 @@ require_once __DIR__ . '/includes/header.php';
         <h1 class="messages-title">
             <i class="fas fa-envelope me-2" style="color: #667eea;"></i>Messages
         </h1>
-        <p class="messages-subtitle">Gérez les messages de contact de vos clients</p>
+        <p class="messages-subtitle">Manage contact messages from your customers</p>
     </div>
 
     <!-- Alerts -->
@@ -435,13 +435,13 @@ require_once __DIR__ . '/includes/header.php';
                 <i class="fas fa-inbox me-1"></i>Tous
             </a>
             <a href="?status=new" class="filter-tab <?php echo $status_filter === 'new' ? 'active' : ''; ?>">
-                <i class="fas fa-circle me-1" style="font-size: 0.5rem;"></i>Nouveaux
+                <i class="fas fa-circle me-1" style="font-size: 0.5rem;"></i>New
             </a>
             <a href="?status=read" class="filter-tab <?php echo $status_filter === 'read' ? 'active' : ''; ?>">
-                <i class="fas fa-eye me-1"></i>Lus
+                <i class="fas fa-eye me-1"></i>Read
             </a>
             <a href="?status=replied" class="filter-tab <?php echo $status_filter === 'replied' ? 'active' : ''; ?>">
-                <i class="fas fa-check me-1"></i>Répondus
+                <i class="fas fa-check me-1"></i>Replied
             </a>
         </div>
         
@@ -451,11 +451,11 @@ require_once __DIR__ . '/includes/header.php';
                 <span class="stat-value"><?php echo $counts['total'] ?? 0; ?></span>
             </div>
             <div class="stat-item">
-                <span class="stat-label">Nouveaux:</span>
+                <span class="stat-label">New:</span>
                 <span class="stat-value" style="color: #667eea;"><?php echo $counts['new_count'] ?? 0; ?></span>
             </div>
             <div class="stat-item">
-                <span class="stat-label">Répondus:</span>
+                <span class="stat-label">Replied:</span>
                 <span class="stat-value" style="color: #10b981;"><?php echo $counts['replied_count'] ?? 0; ?></span>
             </div>
         </div>
@@ -465,8 +465,8 @@ require_once __DIR__ . '/includes/header.php';
     <?php if (empty($messages)): ?>
     <div class="empty-state">
         <i class="fas fa-inbox"></i>
-        <h5>Aucun message trouvé</h5>
-        <p>Les messages de contact s'afficheront ici</p>
+        <h5>No messages found</h5>
+        <p>Contact messages will appear here</p>
     </div>
     <?php else: ?>
     <?php foreach ($messages as $msg): ?>
@@ -476,7 +476,7 @@ require_once __DIR__ . '/includes/header.php';
                 <div class="message-sender">
                     <?php echo htmlspecialchars($msg['name']); ?>
                     <span class="status-badge badge-<?php echo $msg['status']; ?>">
-                        <?php echo $msg['status'] === 'new' ? 'Nouveau' : ($msg['status'] === 'read' ? 'Lu' : 'Répondu'); ?>
+                        <?php echo $msg['status'] === 'new' ? 'New' : ($msg['status'] === 'read' ? 'Read' : 'Replied'); ?>
                     </span>
                 </div>
                 <div class="message-meta">
@@ -487,18 +487,18 @@ require_once __DIR__ . '/includes/header.php';
             </div>
             <div class="message-actions">
                 <?php if ($msg['status'] === 'new'): ?>
-                <a href="?mark_read=<?php echo $msg['id']; ?>" class="action-btn" title="Marquer comme lu">
+                <a href="?mark_read=<?php echo $msg['id']; ?>" class="action-btn" title="Mark as read">
                     <i class="fas fa-eye"></i>
                 </a>
                 <?php endif; ?>
-                <a href="mailto:<?php echo htmlspecialchars($msg['email']); ?>?subject=Re: <?php echo urlencode($msg['subject']); ?>" 
-                   class="action-btn success" title="Répondre par email">
+                     <a href="mailto:<?php echo htmlspecialchars($msg['email']); ?>?subject=Re: <?php echo urlencode($msg['subject']); ?>" 
+                         class="action-btn success" title="Reply by email">
                     <i class="fas fa-reply"></i>
                 </a>
                 <a href="?delete=<?php echo $msg['id']; ?>" 
                    class="action-btn danger"
-                   onclick="return confirm('Supprimer ce message ?')"
-                   title="Supprimer">
+                         onclick="return confirm('Delete this message?')"
+                         title="Delete">
                     <i class="fas fa-trash"></i>
                 </a>
             </div>
@@ -515,7 +515,7 @@ require_once __DIR__ . '/includes/header.php';
             <?php if ($msg['status'] === 'replied' && !empty($msg['admin_reply'])): ?>
             <div class="reply-section">
                 <div class="reply-header">
-                    <i class="fas fa-reply me-1"></i>Votre réponse
+                    <i class="fas fa-reply me-1"></i>Your reply
                     <span style="font-weight: normal; color: #6b7280;">
                         • <?php echo date('d/m/Y H:i', strtotime($msg['replied_at'])); ?>
                     </span>
@@ -532,30 +532,30 @@ require_once __DIR__ . '/includes/header.php';
                         type="button" 
                         data-bs-toggle="collapse" 
                         data-bs-target="#reply-<?php echo $msg['id']; ?>">
-                    <i class="fas fa-reply me-1"></i>Répondre
+                    <i class="fas fa-reply me-1"></i>Reply
                 </button>
                 
                 <div class="collapse mt-3" id="reply-<?php echo $msg['id']; ?>">
                     <form method="POST" action="" style="background: #f9fafb; padding: 1rem; border-radius: 0.5rem; border: 1px solid #e5e7eb;">
                         <input type="hidden" name="message_id" value="<?php echo $msg['id']; ?>">
                         <div class="mb-2">
-                            <label class="form-label" style="font-size: 0.875rem; font-weight: 600;">Votre réponse</label>
+                            <label class="form-label" style="font-size: 0.875rem; font-weight: 600;">Your reply</label>
                             <textarea name="reply" 
                                       class="form-control" 
                                       rows="4" 
-                                      placeholder="Tapez votre réponse ici..."
+                                      placeholder="Type your reply here..."
                                       style="font-size: 0.875rem;"
                                       required></textarea>
                         </div>
                         <div class="d-flex gap-2">
                             <button type="submit" name="reply_message" class="action-btn success">
-                                <i class="fas fa-paper-plane me-1"></i>Envoyer
+                                <i class="fas fa-paper-plane me-1"></i>Send
                             </button>
                             <button type="button" 
                                     class="action-btn" 
                                     data-bs-toggle="collapse" 
                                     data-bs-target="#reply-<?php echo $msg['id']; ?>">
-                                Annuler
+                                Cancel
                             </button>
                         </div>
                     </form>

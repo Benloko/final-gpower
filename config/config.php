@@ -5,7 +5,7 @@ session_start();
 // Base URL configuration
 // Auto-detect host and protocol
 $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
-$host = $_SERVER['HTTP_HOST'];
+$host = $_SERVER['HTTP_HOST'] ?? 'localhost';
 define('BASE_URL', $protocol . "://" . $host);
 
 define('ADMIN_URL', BASE_URL . '/admin');
@@ -13,16 +13,29 @@ define('ADMIN_URL', BASE_URL . '/admin');
 // Upload paths
 define('UPLOAD_PATH', __DIR__ . '/../uploads/');
 define('PRODUCT_IMAGE_PATH', UPLOAD_PATH . 'products/');
+define('PRODUCT_PDF_PATH', UPLOAD_PATH . 'pdfs/');
 
 // Allowed image extensions
 define('ALLOWED_IMAGE_EXTENSIONS', ['jpg', 'jpeg', 'png', 'gif', 'webp']);
 define('MAX_FILE_SIZE', 5242880); // 5MB
+
+// PDF upload settings
+define('ALLOWED_PDF_EXTENSIONS', ['pdf']);
+define('MAX_PDF_FILE_SIZE', 10485760); // 10MB
 
 // Pagination
 define('ITEMS_PER_PAGE', 10);
 
 // Default language
 define('DEFAULT_LANG', 'en');
+
+// Currency display settings
+// Prices in the database are assumed to be stored in CFA Francs (XOF).
+// To display in USD, set the conversion rate below (FCFA to USD).
+define('DISPLAY_CURRENCY', 'USD');
+define('EXCHANGE_RATE_FCFA_TO_USD', 600); // Edit this to the current exchange rate (FCFA per 1 USD)
+// Where prices are stored in the database. Set to 'FCFA' if DB stores XOF, or 'USD' if DB stores USD.
+define('PRICES_STORED_IN', 'USD');
 
 // Timezone
 date_default_timezone_set('UTC');

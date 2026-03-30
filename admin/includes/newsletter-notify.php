@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/email.php';
+require_once __DIR__ . '/../includes/helpers.php';
 
 /**
  * Send new product notification to all active subscribers
@@ -17,10 +18,10 @@ function notifyNewProduct($product) {
     }
     
     // Prepare email content
-    $subject = "🎉 Nouveau produit disponible : " . $product['name'];
-    
-    $body = "Bonjour,\n\n";
-    $body .= "Une nouvelle exclusivité vient d'arriver chez Gpower !\n\n";
+    $subject = "🎉 New product available: " . $product['name'];
+
+    $body = "Hello,\n\n";
+    $body .= "A new exclusive product has arrived at Gpower!\n\n";
     $body .= "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n";
     $body .= "📦 " . strtoupper($product['name']) . "\n\n";
     
@@ -28,19 +29,19 @@ function notifyNewProduct($product) {
         $body .= strip_tags($product['description']) . "\n\n";
     }
     
-    $body .= "💰 Prix : " . number_format($product['price'], 0, '', ' ') . " FCFA\n";
+    $body .= "💰 Price: " . format_price($product['price']) . "\n";
     
     if (!empty($product['quantity']) && $product['quantity'] > 0) {
-        $body .= "📊 Stock disponible : " . $product['quantity'] . " unités\n";
+        $body .= "📊 Available stock: " . $product['quantity'] . " units\n";
     }
     
     $body .= "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n";
-    $body .= "👉 Voir le produit : " . BASE_URL . "/product-details.php?id=" . $product['id'] . "\n\n";
-    $body .= "Ne manquez pas cette opportunité !\n\n";
+    $body .= "👉 View product: " . BASE_URL . "/product-details.php?id=" . $product['id'] . "\n\n";
+    $body .= "Don't miss this opportunity!\n\n";
     $body .= "───────────────────────────────────\n";
-    $body .= "L'équipe Gpower\n";
-    $body .= "Votre partenaire de confiance\n\n";
-    $body .= "📧 Pour vous désabonner, connectez-vous à votre compte\n";
+    $body .= "The Gpower Team\n";
+    $body .= "Your trusted partner\n\n";
+    $body .= "📧 To unsubscribe, log into your account\n";
     
     // Send to all subscribers
     $success_count = 0;

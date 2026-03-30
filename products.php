@@ -92,7 +92,7 @@ $products = $stmt->fetchAll();
                             </h6>
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="fw-bold text-primary small">
-                                    <?php echo number_format($product['price'], 0, ',', ' '); ?> FCFA
+                                    <?php echo format_price($product['price']); ?>
                                 </span>
                                 <button class="btn btn-sm btn-light text-success rounded-circle p-1" 
                                         onclick="contactWhatsApp('<?php echo htmlspecialchars($product['name']); ?>', '<?php echo $settings['whatsapp_number']; ?>')"

@@ -1,5 +1,6 @@
 <?php
 require_once 'config/config.php';
+require_once __DIR__ . '/includes/helpers.php';
 
 // Get settings for WhatsApp number
 $pdo = getPDOConnection();
@@ -28,7 +29,7 @@ try {
         echo '<div class="col-12 text-center py-5">
                 <div class="text-muted">
                     <i class="fas fa-search fa-3x mb-3 opacity-25"></i>
-                    <p>Aucun produit trouvé pour "' . htmlspecialchars($query) . '"</p>
+                    <p>No products found for "' . htmlspecialchars($query) . '"</p>
                 </div>
               </div>';
         exit;
@@ -61,7 +62,7 @@ try {
                     </h6>
                     <div class="d-flex justify-content-between align-items-center">
                         <span class="fw-bold text-primary small">
-                            <?php echo number_format($product['price'], 0, ',', ' '); ?> FCFA
+                            <?php echo format_price($product['price']); ?>
                         </span>
                         <button class="btn btn-sm btn-whatsapp-card rounded-circle p-0 d-flex align-items-center justify-content-center" 
                                 onclick="contactWhatsApp('<?php echo htmlspecialchars($product['name']); ?>', '<?php echo $whatsapp_number; ?>')">
@@ -74,5 +75,5 @@ try {
     <?php endforeach;
 
 } catch (Exception $e) {
-    echo '<div class="col-12 text-center text-danger">Une erreur est survenue.</div>';
+    echo '<div class="col-12 text-center text-danger">An error occurred.</div>';
 }

@@ -12,12 +12,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_message'])) {
     $message = trim($_POST['message'] ?? '');
     
     if (empty($name) || empty($email) || empty($subject) || empty($message)) {
-        $error_message = 'Veuillez remplir tous les champs.';
+        $error_message = 'Please fill in all fields.';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $error_message = 'Veuillez entrer une adresse email valide.';
+        $error_message = 'Please enter a valid email address.';
     } else {
         try {
-            // Créer la table si elle n'existe pas
+            // Create table if it doesn't exist
             $pdo->exec("CREATE TABLE IF NOT EXISTS contact_messages (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 name VARCHAR(255) NOT NULL,
@@ -30,14 +30,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_message'])) {
                 INDEX idx_created (created_at)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
             
-            // Sauvegarder le message dans la base de données
+            // Save the message to the database
             $stmt = $pdo->prepare("INSERT INTO contact_messages (name, email, subject, message) VALUES (?, ?, ?, ?)");
             $stmt->execute([$name, $email, $subject, $message]);
             
-            $success_message = 'Votre message a été envoyé avec succès! Nous vous répondrons dans les plus brefs délais.';
+            $success_message = 'Your message has been sent successfully! We will reply as soon as possible.';
             $name = $email = $subject = $message = '';
         } catch (Exception $e) {
-            $error_message = 'Une erreur s\'est produite lors de l\'envoi. Veuillez réessayer ou nous contacter via WhatsApp.';
+            $error_message = 'An error occurred while sending. Please try again or contact us via WhatsApp.';
         }
     }
 }
@@ -559,8 +559,8 @@ textarea.form-control-modern {
     <div class="container">
         <div class="row">
             <div class="col-lg-8 mx-auto text-center text-white px-3">
-                <h1>Contactez-Nous</h1>
-                <p>Nous sommes là pour répondre à toutes vos questions et besoins</p>
+                <h1>Contact Us</h1>
+                <p>We're here to answer any questions and assist with your needs</p>
             </div>
         </div>
     </div>
@@ -600,20 +600,20 @@ textarea.form-control-modern {
                     <div class="contact-icon-wrapper mx-auto" style="background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);">
                         <i class="fas fa-envelope contact-icon" style="color: #667eea;"></i>
                     </div>
-                    <h3>Email Professionnel</h3>
-                    <p>Envoyez-nous un email pour toute demande d'information, devis ou question technique.</p>
+                    <h3>Business Email</h3>
+                    <p>Send us an email for inquiries, quotes, or technical questions.</p>
                     
                     <div class="contact-info-box">
-                        <div class="small text-muted mb-1">Écrivez-nous à</div>
+                        <div class="small text-muted mb-1">Write to us at</div>
                         <a href="mailto:<?php echo $settings['site_email'] ?? 'contact@gpower.com'; ?>" 
                            class="email-link">
                             <?php echo $settings['site_email'] ?? 'contact@gpower.com'; ?>
                         </a>
                     </div>
                     
-                    <a href="mailto:<?php echo $settings['site_email'] ?? 'contact@gpower.com'; ?>" 
-                       class="contact-btn btn-email">
-                        <i class="fas fa-envelope me-2"></i>Envoyer un Email
+                                <a href="mailto:<?php echo $settings['site_email'] ?? 'contact@gpower.com'; ?>" 
+                                    class="contact-btn btn-email">
+                                <i class="fas fa-envelope me-2"></i>Send an Email
                     </a>
                 </div>
             </div>
@@ -627,23 +627,23 @@ textarea.form-control-modern {
                         <i class="fab fa-whatsapp contact-icon" style="color: #25D366;"></i>
                     </div>
                     <h3>WhatsApp Direct</h3>
-                    <p>Pour une réponse rapide et instantanée, contactez-nous directement via WhatsApp.</p>
+                    <p>For a fast, instant response, contact us directly via WhatsApp.</p>
                     
                     <div class="wa-badge">
                         <div class="d-flex align-items-center justify-content-center gap-2">
                             <i class="fas fa-bolt text-success"></i>
-                            <small class="fw-semibold text-success">Réponse rapide garantie !</small>
+                            <small class="fw-semibold text-success">Fast response guaranteed!</small>
                         </div>
                     </div>
                     
-                    <a href="https://wa.me/<?php echo $settings['whatsapp_number'] ?? ''; ?>?text=Bonjour%20Gpower%2C%20je%20souhaite%20obtenir%20des%20informations" 
+                        <a href="https://wa.me/<?php echo $settings['whatsapp_number'] ?? ''; ?>?text=Hello%20Gpower%2C%20I%20would%20like%20to%20get%20information" 
                        target="_blank"
                        class="contact-btn btn-whatsapp">
                         <i class="fab fa-whatsapp me-2"></i>Discuter Maintenant
                     </a>
                     
                     <div class="mt-3">
-                        <small class="text-muted"><i class="fas fa-clock me-1"></i>Disponible 7j/7</small>
+                        <small class="text-muted"><i class="fas fa-clock me-1"></i>Available 7 days/week</small>
                     </div>
                 </div>
             </div>
@@ -658,36 +658,36 @@ textarea.form-control-modern {
                     <div class="form-icon-header mx-auto">
                         <i class="fas fa-paper-plane" style="font-size: 1.5rem; color: #667eea;"></i>
                     </div>
-                    <h2>Envoyez-Nous un Message</h2>
-                    <p class="subtitle">Remplissez le formulaire ci-dessous et nous vous répondrons rapidement</p>
+                    <h2>Send Us a Message</h2>
+                    <p class="subtitle">Fill the form below and we will reply promptly</p>
                 </div>
                 
                 <form method="POST" action="" class="needs-validation" novalidate id="contactForm">
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label">
-                                <i class="fas fa-user me-1 text-primary"></i>Nom Complet
+                                <i class="fas fa-user me-1 text-primary"></i>Full Name
                             </label>
                             <div class="input-with-icon">
                                 <i class="fas fa-user input-icon"></i>
                                 <input type="text" 
                                        name="name" 
                                        class="form-control form-control-modern" 
-                                       placeholder="Ex: Jean Dupont"
+                                            placeholder="e.g. John Doe"
                                        value="<?php echo htmlspecialchars($name ?? ''); ?>"
                                        required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">
-                                <i class="fas fa-envelope me-1 text-primary"></i>Adresse Email
+                                <i class="fas fa-envelope me-1 text-primary"></i>Email Address
                             </label>
                             <div class="input-with-icon">
                                 <i class="fas fa-envelope input-icon"></i>
                                 <input type="email" 
                                        name="email" 
                                        class="form-control form-control-modern" 
-                                       placeholder="votre.email@exemple.com"
+                                       placeholder="your.email@example.com"
                                        value="<?php echo htmlspecialchars($email ?? ''); ?>"
                                        required>
                             </div>
@@ -696,14 +696,14 @@ textarea.form-control-modern {
                     
                     <div class="mt-3">
                         <label class="form-label">
-                            <i class="fas fa-tag me-1 text-primary"></i>Sujet
+                            <i class="fas fa-tag me-1 text-primary"></i>Subject
                         </label>
                         <div class="input-with-icon">
                             <i class="fas fa-tag input-icon"></i>
                             <input type="text" 
                                    name="subject" 
                                    class="form-control form-control-modern" 
-                                   placeholder="Ex: Demande de devis pour générateur"
+                                   placeholder="e.g. Quote request for generator"
                                    value="<?php echo htmlspecialchars($subject ?? ''); ?>"
                                    required>
                         </div>
@@ -711,40 +711,39 @@ textarea.form-control-modern {
                     
                     <div class="mt-3">
                         <label class="form-label">
-                            <i class="fas fa-comment-dots me-1 text-primary"></i>Votre Message
+                            <i class="fas fa-comment-dots me-1 text-primary"></i>Your Message
                         </label>
                         <div class="input-with-icon">
                             <i class="fas fa-comment-dots input-icon-textarea"></i>
                             <textarea name="message" 
                                       class="form-control form-control-modern" 
                                       rows="6" 
-                                      placeholder="Décrivez votre demande en détail... Plus vous donnez d'informations, mieux nous pourrons vous aider !"
+                                      placeholder="Describe your request in detail... The more information you provide, the better we can help!"
                                       required><?php echo htmlspecialchars($message ?? ''); ?></textarea>
                         </div>
                         <div class="char-counter" id="charCounter">
                             <i class="fas fa-keyboard me-1"></i>
-                            <span id="charCount">0</span> caractères
+                            <span id="charCount">0</span> characters
                         </div>
                     </div>
                     
-                    <div class="info-alert mt-3">
-                        <i class="fas fa-lightbulb me-2"></i>
-                        <div>
-                            <strong>Conseil Pro :</strong> Pour une réponse instantanée, contactez-nous via WhatsApp. 
-                            Les emails sont traités sous 24-48h.
+                        <div class="info-alert mt-3">
+                            <i class="fas fa-lightbulb me-2"></i>
+                            <div>
+                                <strong>Pro Tip:</strong> For an instant response, contact us via WhatsApp. Emails are processed within 24-48 hours.
+                            </div>
                         </div>
-                    </div>
                     
                     <div class="d-flex flex-column flex-md-row gap-3 justify-content-end mt-4">
                         <button type="reset" class="btn-reset">
-                            <i class="fas fa-redo me-2"></i>Réinitialiser
+                            <i class="fas fa-redo me-2"></i>Reset
                         </button>
                         <button type="submit" name="send_message" class="btn-submit" id="submitBtn">
                             <span class="btn-content">
-                                <i class="fas fa-paper-plane me-2"></i>Envoyer le Message
+                                <i class="fas fa-paper-plane me-2"></i>Send Message
                             </span>
                             <span class="btn-loading" style="display: none;">
-                                <i class="fas fa-spinner fa-spin me-2"></i>Envoi en cours...
+                                <i class="fas fa-spinner fa-spin me-2"></i>Sending...
                             </span>
                         </button>
                     </div>
@@ -757,8 +756,8 @@ textarea.form-control-modern {
     <div class="row">
         <div class="col-12">
             <div class="services-section">
-                <h2>Comment Pouvons-Nous Vous Aider ?</h2>
-                <p class="subtitle">Notre équipe est prête à répondre à tous vos besoins</p>
+                <h2>How Can We Help You?</h2>
+                <p class="subtitle">Our team is ready to address your needs</p>
                 
                 <div class="row g-3">
                     <div class="col-sm-6 col-lg-3">
@@ -766,8 +765,8 @@ textarea.form-control-modern {
                             <div class="service-icon mx-auto" style="background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);">
                                 <i class="fas fa-question-circle" style="color: #667eea;"></i>
                             </div>
-                            <h6>Questions Produits</h6>
-                            <p>Informations techniques et disponibilité</p>
+                            <h6>Product Questions</h6>
+                            <p>Technical information and availability</p>
                         </div>
                     </div>
                     <div class="col-sm-6 col-lg-3">
@@ -775,8 +774,8 @@ textarea.form-control-modern {
                             <div class="service-icon mx-auto" style="background: linear-gradient(135deg, #11998e15 0%, #38ef7d15 100%);">
                                 <i class="fas fa-file-invoice-dollar" style="color: #11998e;"></i>
                             </div>
-                            <h6>Demande de Devis</h6>
-                            <p>Devis personnalisé rapide</p>
+                            <h6>Quote Request</h6>
+                            <p>Fast personalized quote</p>
                         </div>
                     </div>
                     <div class="col-sm-6 col-lg-3">
@@ -784,8 +783,8 @@ textarea.form-control-modern {
                             <div class="service-icon mx-auto" style="background: linear-gradient(135deg, #f093fb15 0%, #f5576c15 100%);">
                                 <i class="fas fa-handshake" style="color: #f5576c;"></i>
                             </div>
-                            <h6>Partenariat</h6>
-                            <p>Collaborations et revendeurs</p>
+                            <h6>Partnerships</h6>
+                            <p>Collaborations & resellers</p>
                         </div>
                     </div>
                     <div class="col-sm-6 col-lg-3">
@@ -793,8 +792,8 @@ textarea.form-control-modern {
                             <div class="service-icon mx-auto" style="background: linear-gradient(135deg, #FFA50015 0%, #FF450015 100%);">
                                 <i class="fas fa-headset" style="color: #FF6B00;"></i>
                             </div>
-                            <h6>Support Technique</h6>
-                            <p>Assistance d'experts</p>
+                            <h6>Technical Support</h6>
+                            <p>Expert assistance</p>
                         </div>
                     </div>
                 </div>
@@ -807,13 +806,13 @@ textarea.form-control-modern {
         <div class="col-12">
             <div class="cta-section">
                 <i class="fas fa-comments mb-3" style="font-size: 2.5rem; opacity: 0.9;"></i>
-                <h3>Besoin d'une Réponse Rapide ?</h3>
-                <p>WhatsApp est le moyen le plus rapide de nous joindre. Obtenez une réponse en quelques minutes !</p>
+                <h3>Need a Quick Answer?</h3>
+                <p>WhatsApp is the fastest way to reach us. Get a reply in minutes!</p>
                 <a href="https://wa.me/<?php echo $settings['whatsapp_number'] ?? ''; ?>?text=Bonjour%20Gpower" 
                    target="_blank"
                    class="btn-cta">
                     <i class="fab fa-whatsapp text-success" style="font-size: 1.25rem;"></i>
-                    <span>Démarrer une Conversation</span>
+                    <span>Start a Conversation</span>
                 </a>
             </div>
         </div>

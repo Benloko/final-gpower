@@ -64,6 +64,9 @@ if (isset($_GET['id'])) {
     $stmt = $pdo->prepare("SELECT * FROM product_images WHERE product_id = ? ORDER BY display_order");
     $stmt->execute([$id]);
     $product_images = $stmt->fetchAll();
+
+    // No server-side translations are loaded here — admin manages content in English only.
+
 } else {
     redirect('products.php');
 }
@@ -89,6 +92,7 @@ if (isset($_GET['delete_image'])) {
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = sanitize($_POST['name']);
+    $identification_number = sanitize($_POST['identification_number'] ?? '');
     $location = sanitize($_POST['location'] ?? '');
     // Collect structured specification fields (if provided) and append freeform specs
     $spec_manufacturer = sanitize($_POST['spec_manufacturer'] ?? '');
@@ -122,6 +126,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($name) || $price <= 0) {
         $error = 'Please fill in all required fields';
     } else {
+        // Ensure PDF upload directory exists
+        if (!is_dir(PRODUCT_PDF_PATH)) {
+            @mkdir(PRODUCT_PDF_PATH, 0755, true);
+        }
+
         // Handle main image upload
         $main_image = $product['main_image'];
         
@@ -142,19 +151,39 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         }
         
-        // Update product (include quantity if present in schema)
+        // Handle PDF upload
+        $pdf_file = $product['pdf_file'] ?? '';
+        
+        if (isset($_FILES['pdf_file']) && $_FILES['pdf_file']['error'] == 0) {
+            $file_ext = strtolower(pathinfo($_FILES['pdf_file']['name'], PATHINFO_EXTENSION));
+            
+            if (in_array($file_ext, ALLOWED_PDF_EXTENSIONS) && $_FILES['pdf_file']['size'] <= MAX_PDF_FILE_SIZE) {
+                $new_filename = 'prod_' . time() . '_' . uniqid() . '.' . $file_ext;
+                $upload_path = PRODUCT_PDF_PATH . $new_filename;
+                
+                if (move_uploaded_file($_FILES['pdf_file']['tmp_name'], $upload_path)) {
+                    // Delete old PDF
+                    if ($pdf_file && file_exists(PRODUCT_PDF_PATH . $pdf_file)) {
+                        unlink(PRODUCT_PDF_PATH . $pdf_file);
+                    }
+                    $pdf_file = $new_filename;
+                }
+            }
+        }
+        
+        // Update product (include quantity and pdf_file if present in schema)
         if (!empty($hasQuantity)) {
             $stmt = $pdo->prepare("UPDATE products 
-                                   SET name = ?, slug = ?, location = ?, specifications = ?, 
-                                       price = ?, quantity = ?, main_image = ?, status = ?, featured = ? 
+                                   SET name = ?, identification_number = ?, slug = ?, location = ?, specifications = ?, 
+                                       price = ?, quantity = ?, main_image = ?, pdf_file = ?, status = ?, featured = ? 
                                    WHERE id = ?");
-            $stmt->execute([$name, $slug, $location, $specifications, $price, $quantity, $main_image, $status, $featured, $product['id']]);
+            $stmt->execute([$name, $identification_number, $slug, $location, $specifications, $price, $quantity, $main_image, $pdf_file, $status, $featured, $product['id']]);
         } else {
             $stmt = $pdo->prepare("UPDATE products 
-                                   SET name = ?, slug = ?, location = ?, specifications = ?, 
-                                       price = ?, main_image = ?, status = ?, featured = ? 
+                                   SET name = ?, identification_number = ?, slug = ?, location = ?, specifications = ?, 
+                                       price = ?, main_image = ?, pdf_file = ?, status = ?, featured = ? 
                                    WHERE id = ?");
-            $stmt->execute([$name, $slug, $location, $specifications, $price, $main_image, $status, $featured, $product['id']]);
+            $stmt->execute([$name, $identification_number, $slug, $location, $specifications, $price, $main_image, $pdf_file, $status, $featured, $product['id']]);
         }
         
         // Handle new gallery images
@@ -200,12 +229,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $notification_result = notifyNewProduct($product_data);
             
             if ($notification_result && $notification_result['success'] > 0) {
-                $success = 'Produit publié et ' . $notification_result['success'] . ' abonné(s) notifié(s) par email !';
+                $success = 'Product published and ' . $notification_result['success'] . ' subscriber(s) notified by email!';
             } else {
-                $success = 'Produit mis à jour avec succès !';
+                $success = 'Product updated successfully!';
             }
         } else {
-            $success = 'Produit mis à jour avec succès !';
+            $success = 'Product updated successfully!';
         }
         
         // Refresh product data
@@ -218,6 +247,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $product_images = $stmt->fetchAll();
     }
 }
+
+// Handle saving translations from admin form (if present)
+    // Translations are not saved server-side — admin provides English content only.
 
 $page_title = 'Edit Product';
 require_once __DIR__ . '/includes/header.php';
@@ -273,11 +305,30 @@ require_once __DIR__ . '/includes/header.php';
                 <div class="card-body p-3">
                     <div class="mb-3">
                         <label class="form-label fw-semibold small text-muted mb-1">Product Name *</label>
-                        <input type="text" 
+                           <input type="text" 
                                name="name" 
                                class="form-control border-1" 
                                value="<?php echo htmlspecialchars($product['name']); ?>"
                                required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold small text-muted mb-1">
+                            <i class="fas fa-barcode text-secondary me-1"></i>Product Identification Number
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-1">
+                                <i class="fas fa-hashtag text-secondary"></i>
+                            </span>
+                            <input type="text" 
+                                   name="identification_number" 
+                                   class="form-control border-1" 
+                                   value="<?php echo htmlspecialchars($product['identification_number'] ?? ''); ?>"
+                                   placeholder="e.g. SN-2025-001, MODEL-XYZ-789">
+                        </div>
+                        <small class="text-muted d-block mt-1">
+                            <i class="fas fa-info-circle me-1"></i>Unique serial, model code, or product ID
+                        </small>
                     </div>
 
                     <div class="mb-0">
@@ -286,10 +337,12 @@ require_once __DIR__ . '/includes/header.php';
                                name="location" 
                                class="form-control border-1" 
                                value="<?php echo htmlspecialchars($product['location'] ?? ''); ?>"
-                               placeholder="e.g. Abidjan, Côte d'Ivoire">
+                                   placeholder="e.g. Abidjan, Ivory Coast">
                     </div>
                 </div>
             </div>
+
+            <!-- Translations removed — admin edits are in English only -->
 
             <div class="card border-0 shadow-sm rounded-3 mb-3">
                 <div class="card-header bg-light border-0 py-2 px-3">
@@ -359,7 +412,7 @@ require_once __DIR__ . '/includes/header.php';
 
                         <?php if (!empty($hasQuantity)): ?>
                         <div class="col-md-4 mb-2">
-                            <label class="form-label fw-semibold small text-muted mb-1">Quantité</label>
+                            <label class="form-label fw-semibold small text-muted mb-1">Quantity</label>
                             <input type="number" 
                                    name="quantity" 
                                    class="form-control border-1" 
@@ -471,6 +524,66 @@ require_once __DIR__ . '/includes/header.php';
                     <?php endif; ?>
                 </div>
             </div>
+
+            <div class="card border-0 shadow-sm rounded-3 mb-3">
+                <div class="card-header bg-light border-0 py-2 px-3">
+                    <h6 class="mb-0 fw-bold text-dark" style="font-size: 0.9rem;"><i class="fas fa-file-pdf me-2 text-danger"></i>Documents & Inventory</h6>
+                </div>
+                <div class="card-body p-3">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold small text-muted mb-2">
+                            <i class="fas fa-file-pdf text-danger me-1"></i>Product Details PDF (Datasheet, Specs, Manual)
+                        </label>
+                        <?php if ($product['pdf_file'] ?? false): ?>
+                        <div class="mb-2 p-2 bg-light rounded-2 d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-file-pdf text-danger me-2"></i>
+                                <span class="fw-semibold small"><?php echo htmlspecialchars($product['pdf_file']); ?></span>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-danger rounded-circle" onclick="document.getElementById('pdfDeleteBtn').click();" style="width: 28px; height: 28px; padding: 0; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-trash" style="font-size: 0.6rem;"></i>
+                            </button>
+                            <input type="hidden" id="pdfDeleteBtn" name="delete_pdf" value="0">
+                        </div>
+                        <small class="text-muted d-block mb-2">
+                            <i class="fas fa-check-circle text-success me-1"></i>Current PDF attached
+                        </small>
+                        <?php endif; ?>
+                        <div class="border border-2 border-dashed rounded-3 p-3 text-center bg-light position-relative <?php echo ($product['pdf_file'] ?? false) ? 'opacity-75' : ''; ?>" style="cursor: pointer;">
+                            <i class="fas fa-file-pdf text-danger mb-2" style="font-size: 1.5rem; opacity: 0.4;"></i>
+                            <p class="text-muted small mb-0 fw-semibold">Click to upload/replace PDF</p>
+                            <p class="text-muted mb-0" style="font-size: 0.65rem;">Max 10MB • PDF only</p>
+                            <input type="file" 
+                                   id="pdfInput"
+                                   name="pdf_file" 
+                                   class="position-absolute w-100 h-100 top-0 start-0 opacity-0" 
+                                   style="cursor: pointer;"
+                                   accept=".pdf">
+                            <div id="pdfFileName" class="text-success fw-semibold mt-2" style="font-size: 0.85rem; display: none;"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-0">
+                        <label class="form-label fw-semibold small text-muted mb-1">
+                            <i class="fas fa-cubes text-info me-1"></i>Quantity in Stock
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-1">
+                                <i class="fas fa-layer-group text-info"></i>
+                            </span>
+                            <input type="number" 
+                                   name="quantity" 
+                                   class="form-control border-1" 
+                                   min="0" 
+                                   value="<?php echo intval($product['quantity'] ?? 0); ?>"
+                                   placeholder="Units available">
+                        </div>
+                        <small class="text-muted d-block mt-1">
+                            <i class="fas fa-info-circle me-1"></i>Display stock status on product page
+                        </small>
+                    </div>
+                </div>
+            </div>
             
             <div class="d-flex gap-2 mb-4">
                 <button type="submit" class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm">
@@ -544,15 +657,15 @@ require_once __DIR__ . '/includes/header.php';
                         <i class="fas fa-image text-danger" style="font-size: 1.2rem;"></i>
                     </div>
                 </div>
-                <h6 class="fw-bold mb-2">Supprimer cette image ?</h6>
-                <p class="text-muted small mb-0">Cette action est irréversible.</p>
+                <h6 class="fw-bold mb-2">Delete this image?</h6>
+                <p class="text-muted small mb-0">This action is irreversible.</p>
             </div>
             <div class="modal-footer border-0 justify-content-center pb-4 pt-0">
                 <button type="button" class="btn btn-light btn-sm rounded-pill px-3" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-1" style="font-size: 0.7rem;"></i><span style="font-size: 0.8rem;">Annuler</span>
+                    <i class="fas fa-times me-1" style="font-size: 0.7rem;"></i><span style="font-size: 0.8rem;">Cancel</span>
                 </button>
                 <a href="#" id="confirmDeleteImageBtn" class="btn btn-danger btn-sm rounded-pill px-3">
-                    <i class="fas fa-trash me-1" style="font-size: 0.7rem;"></i><span style="font-size: 0.8rem;">Supprimer</span>
+                    <i class="fas fa-trash me-1" style="font-size: 0.7rem;"></i><span style="font-size: 0.8rem;">Delete</span>
                 </a>
             </div>
         </div>
@@ -580,6 +693,30 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// Handle PDF file display
+document.getElementById('pdfInput').addEventListener('change', function(e) {
+    const fileName = this.files[0]?.name || '';
+    const pdfFileNameDiv = document.getElementById('pdfFileName');
+    
+    if (fileName) {
+        pdfFileNameDiv.textContent = '✓ ' + fileName;
+        pdfFileNameDiv.style.display = 'block';
+    } else {
+        pdfFileNameDiv.style.display = 'none';
+    }
+});
+
+function previewImage(input, previewId) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById(previewId).src = e.target.result;
+            document.getElementById(previewId).style.display = 'block';
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
 </script>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

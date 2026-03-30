@@ -1,19 +1,31 @@
 <?php
-// Database configuration
-define('DB_HOST', '127.0.0.1');
-define('DB_USER', 'gpower_user');
-define('DB_PASS', 'gpower_pass_2025');
-define('DB_NAME', 'gpower_db');
+
+// Improved detection of local environment
+$server = $_SERVER['SERVER_NAME'] ?? '';
+if (
+    $server === 'localhost' ||
+    strpos($server, '127.') === 0 ||
+    strpos($server, '0.') === 0 ||
+    PHP_SAPI === 'cli-server' ||
+    PHP_SAPI === 'cli'
+) {
+    $db_config = require __DIR__ . '/config.local.php';
+} else {
+    $db_config = require __DIR__ . '/config.prod.php';
+}
+
+define('DB_HOST', $db_config['DB_HOST']);
+define('DB_USER', $db_config['DB_USER']);
+define('DB_PASS', $db_config['DB_PASS']);
+define('DB_NAME', $db_config['DB_NAME']);
 
 // Create database connection
 function getDBConnection() {
     try {
         $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-        
         if ($conn->connect_error) {
             die("Connection failed: " . $conn->connect_error);
         }
-        
         $conn->set_charset("utf8mb4");
         return $conn;
     } catch (Exception $e) {

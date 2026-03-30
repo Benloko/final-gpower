@@ -10,13 +10,13 @@ $section = $_GET['section'] ?? 'mentions';
         <div class="col-lg-10">
             <div class="mb-3">
                 <a href="<?php echo BASE_URL; ?>/" class="btn btn-white rounded-pill px-4 py-2 shadow-sm hover-lift text-decoration-none fw-bold">
-                    <i class="fas fa-arrow-left me-2 text-primary"></i> Retour
+                    <i class="fas fa-arrow-left me-2 text-primary"></i> Back
                 </a>
             </div>
 
             <div class="text-center mb-4">
-                <h1 class="fw-bold display-5 mb-2">Informations Légales</h1>
-                <p class="text-muted lead">Transparence et confiance sont au cœur de nos engagements.</p>
+                <h1 class="fw-bold display-5 mb-2">Legal Information</h1>
+                <p class="text-muted lead">Transparency and trust are at the heart of our commitments.</p>
             </div>
 
             <div>
@@ -25,22 +25,22 @@ $section = $_GET['section'] ?? 'mentions';
                     <div class="col-4 col-md-auto">
                         <a href="?section=mentions" class="btn w-100 h-100 px-1 py-2 px-md-4 py-md-3 rounded-pill shadow-sm d-flex flex-column flex-md-row align-items-center justify-content-center gap-1 gap-md-2 hover-lift <?php echo $section === 'mentions' ? 'btn-primary' : 'bg-white text-muted border'; ?>">
                             <i class="fas fa-building"></i> 
-                            <span class="fw-bold d-none d-md-inline">Mentions Légales</span>
-                            <span class="fw-bold d-inline d-md-none" style="font-size: 0.7rem;">Mentions</span>
+                            <span class="fw-bold d-none d-md-inline">Legal Notice</span>
+                            <span class="fw-bold d-inline d-md-none" style="font-size: 0.7rem;">Legal</span>
                         </a>
                     </div>
                     <div class="col-4 col-md-auto">
                         <a href="?section=privacy" class="btn w-100 h-100 px-1 py-2 px-md-4 py-md-3 rounded-pill shadow-sm d-flex flex-column flex-md-row align-items-center justify-content-center gap-1 gap-md-2 hover-lift <?php echo $section === 'privacy' ? 'btn-primary' : 'bg-white text-muted border'; ?>">
                             <i class="fas fa-user-shield"></i>
-                            <span class="fw-bold d-none d-md-inline">Confidentialité</span>
-                            <span class="fw-bold d-inline d-md-none" style="font-size: 0.7rem;">Confidentialité</span>
+                            <span class="fw-bold d-none d-md-inline">Privacy</span>
+                            <span class="fw-bold d-inline d-md-none" style="font-size: 0.7rem;">Privacy</span>
                         </a>
                     </div>
                     <div class="col-4 col-md-auto">
                         <a href="?section=terms" class="btn w-100 h-100 px-1 py-2 px-md-4 py-md-3 rounded-pill shadow-sm d-flex flex-column flex-md-row align-items-center justify-content-center gap-1 gap-md-2 hover-lift <?php echo $section === 'terms' ? 'btn-primary' : 'bg-white text-muted border'; ?>">
                             <i class="fas fa-file-contract"></i>
-                            <span class="fw-bold d-none d-md-inline">Conditions (CGV)</span>
-                            <span class="fw-bold d-inline d-md-none" style="font-size: 0.7rem;">CGV</span>
+                            <span class="fw-bold d-none d-md-inline">Terms (T&C)</span>
+                            <span class="fw-bold d-inline d-md-none" style="font-size: 0.7rem;">T&C</span>
                         </a>
                     </div>
                 </div>
@@ -50,75 +50,75 @@ $section = $_GET['section'] ?? 'mentions';
                     <div class="card border-0 shadow-sm rounded-4">
                         <div class="card-body p-5">
                             <?php if ($section === 'mentions'): ?>
-                                <h2 class="fw-bold mb-4 text-primary">Mentions Légales</h2>
+                                <h2 class="fw-bold mb-4 text-primary">Legal Notice</h2>
                                 <div class="mb-4">
-                                    <h5 class="fw-bold">1. Éditeur du site</h5>
+                                    <h5 class="fw-bold">1. Site Owner</h5>
                                     <p class="text-muted">
-                                        Le site GPOWER est édité par la société GPOWER SARL.<br>
-                                        Siège social : Abidjan, Côte d'Ivoire<br>
-                                        Email : contact@gpower.ci<br>
-                                        Téléphone : +225 07 07 07 07 07
+                                        This website is published by GPOWER SARL.<br>
+                                        Registered office: Abidjan, Ivory Coast<br>
+                                        Email: contact@gpower.ci<br>
+                                        Phone: +225 07 07 07 07 07
                                     </p>
                                 </div>
                                 <div class="mb-4">
-                                    <h5 class="fw-bold">2. Hébergement</h5>
+                                    <h5 class="fw-bold">2. Hosting</h5>
                                     <p class="text-muted">
-                                        Ce site est hébergé par [Nom de l'hébergeur], [Adresse de l'hébergeur].
+                                        This website is hosted by [Hosting Provider Name], [Provider Address].
                                     </p>
                                 </div>
                                 <div class="mb-4">
-                                    <h5 class="fw-bold">3. Propriété intellectuelle</h5>
+                                    <h5 class="fw-bold">3. Intellectual Property</h5>
                                     <p class="text-muted">
-                                        L'ensemble de ce site relève de la législation ivoirienne et internationale sur le droit d'auteur et la propriété intellectuelle. Tous les droits de reproduction sont réservés.
+                                        All content on this website is protected by applicable copyright and intellectual property laws. All rights reserved.
                                     </p>
                                 </div>
 
                             <?php elseif ($section === 'privacy'): ?>
-                                <h2 class="fw-bold mb-4 text-primary">Politique de Confidentialité</h2>
+                                <h2 class="fw-bold mb-4 text-primary">Privacy Policy</h2>
                                 <p class="lead text-muted mb-4">
-                                    Chez GPOWER, nous prenons la protection de vos données très au sérieux.
+                                    At GPOWER, we take the protection of your personal data seriously.
                                 </p>
                                 <div class="mb-4">
-                                    <h5 class="fw-bold">Collecte des données</h5>
+                                    <h5 class="fw-bold">Data Collection</h5>
                                     <p class="text-muted">
-                                        Les informations recueillies sur ce site sont enregistrées dans un fichier informatisé par GPOWER pour la gestion de notre clientèle et l'envoi de nos offres.
+                                        Information collected on this site is stored by GPOWER for customer management and to send offers.
                                     </p>
                                 </div>
                                 <div class="mb-4">
-                                    <h5 class="fw-bold">Utilisation des données</h5>
+                                    <h5 class="fw-bold">Use of Data</h5>
                                     <p class="text-muted">
-                                        Elles sont conservées pendant 3 ans et sont destinées au service marketing et au service commercial établis en Côte d'Ivoire.
+                                        Data is retained for up to 3 years and is used by our marketing and sales teams located in Ivory Coast.
                                     </p>
                                 </div>
                                 <div class="alert alert-info border-0 rounded-3">
                                     <i class="fas fa-info-circle me-2"></i>
-                                    Conformément à la loi, vous pouvez exercer votre droit d'accès aux données vous concernant et les faire rectifier en nous contactant.
+                                    In accordance with applicable law, you may exercise your right to access and correct your personal data by contacting us.
                                 </div>
 
                             <?php elseif ($section === 'terms'): ?>
-                                <h2 class="fw-bold mb-4 text-primary">Conditions Générales de Vente</h2>
+                                <h2 class="fw-bold mb-4 text-primary">Terms & Conditions</h2>
                                 <div class="mb-4">
-                                    <h5 class="fw-bold">1. Objet</h5>
+                                    <h5 class="fw-bold">1. Purpose</h5>
                                     <p class="text-muted">
-                                        Les présentes conditions régissent les ventes par la société GPOWER d'équipements électroniques et accessoires.
+                                        These terms govern the sale of electronic equipment and accessories by GPOWER.
                                     </p>
                                 </div>
                                 <div class="mb-4">
-                                    <h5 class="fw-bold">2. Prix</h5>
+                                    <h5 class="fw-bold">2. Pricing</h5>
                                     <p class="text-muted">
-                                        Les prix de nos produits sont indiqués en Francs CFA (FCFA) toutes taxes comprises (TTC), sauf indication contraire.
+                                        Product prices are shown in US Dollars (USD), including taxes, unless stated otherwise.
                                     </p>
                                 </div>
                                 <div class="mb-4">
-                                    <h5 class="fw-bold">3. Commandes</h5>
+                                    <h5 class="fw-bold">3. Orders</h5>
                                     <p class="text-muted">
-                                        Vous pouvez passer commande sur notre site internet ou via WhatsApp. Les informations contractuelles sont présentées en langue française.
+                                        Orders can be placed via our website or through WhatsApp. Contractual information is provided in English.
                                     </p>
                                 </div>
                                 <div class="mb-4">
-                                    <h5 class="fw-bold">4. Livraison</h5>
+                                    <h5 class="fw-bold">4. Delivery</h5>
                                     <p class="text-muted">
-                                        Les produits sont livrés à l'adresse de livraison indiquée au cours du processus de commande, dans le délai indiqué sur la page de validation de la commande.
+                                        Products are delivered to the address provided during checkout within the timeframe displayed on the order confirmation page.
                                     </p>
                                 </div>
                             <?php endif; ?>

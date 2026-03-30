@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['subscribe'])) {
     }
     
     try {
-        // Créer la table si elle n'existe pas
+        // Create the table if it doesn't exist
         $pdo->exec("CREATE TABLE IF NOT EXISTS newsletter_subscribers (
             id INT AUTO_INCREMENT PRIMARY KEY,
             email VARCHAR(255) NOT NULL UNIQUE,
@@ -28,14 +28,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['subscribe'])) {
             INDEX idx_subscribed (subscribed_at)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
         
-        // Vérifier si l'email existe déjà
+        // Check if the email already exists
         $stmt = $pdo->prepare("SELECT * FROM newsletter_subscribers WHERE email = ?");
         $stmt->execute([$email]);
         $existing = $stmt->fetch();
         
         if ($existing) {
             if ($existing['status'] === 'unsubscribed') {
-                // Réactiver l'abonnement
+                // Reactivate subscription
                 $stmt = $pdo->prepare("UPDATE newsletter_subscribers SET status = 'active', subscribed_at = NOW() WHERE email = ?");
                 $stmt->execute([$email]);
                 
@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['subscribe'])) {
                 header('Location: ' . $_SERVER['HTTP_REFERER'] . '?newsletter=exists');
             }
         } else {
-            // Nouvel abonnement
+            // New subscription
             $ip = $_SERVER['REMOTE_ADDR'] ?? null;
             $stmt = $pdo->prepare("INSERT INTO newsletter_subscribers (email, ip_address) VALUES (?, ?)");
             $stmt->execute([$email, $ip]);

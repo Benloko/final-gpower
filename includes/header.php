@@ -1,6 +1,10 @@
 <?php
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/language.php';
+require_once __DIR__ . '/helpers.php';
+
+// Base path without query for JS use
+$basePathOnly = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 // Get settings from database
 $pdo = getPDOConnection();
@@ -61,20 +65,8 @@ if (isset($_COOKIE['visitor_email'])) {
                     </ul>
                 </div>
 
-                <!-- Right controls: language + whatsapp + mobile toggler -->
+                <!-- Right controls: WhatsApp + mobile toggler -->
                 <div class="d-flex align-items-center gap-2">
-                    <div class="d-none d-lg-block">
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle py-1 px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-weight:600;font-size:0.85rem;">
-                                <i class="fas fa-globe me-1"></i><?php echo strtoupper($current_lang); ?>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="<?php echo BASE_URL; ?>/change_language.php?lang=en">🇬🇧 English</a></li>
-                                <li><a class="dropdown-item" href="<?php echo BASE_URL; ?>/change_language.php?lang=fr">🇫🇷 Français</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
                     <a href="https://wa.me/<?php echo $settings['whatsapp_number'] ?? ''; ?>" target="_blank" class="btn btn-success btn-whatsapp-desktop d-none d-lg-inline-flex align-items-center justify-content-center" aria-label="WhatsApp">
                         <i class="fab fa-whatsapp" aria-hidden="true"></i>
                         <span class="whatsapp-label ms-2">WhatsApp</span>
@@ -88,7 +80,7 @@ if (isset($_COOKIE['visitor_email'])) {
         </nav>
 
         <!-- Mobile offcanvas menu -->
-        <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel" style="position:fixed; top:0; left:0; width:85%; max-width:340px; z-index:1075; background:#ffffff;">
+                <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel" style="position:fixed; top:0; left:0; width:78%; max-width:320px; z-index:1075; background: linear-gradient(180deg, rgba(3,37,65,0.55) 0%, rgba(3,37,65,0.35) 100%), url('<?php echo BASE_URL; ?>/assets/images/menu-bg.jpeg') center/cover no-repeat;">
             <div class="offcanvas-header">
                 <h5 class="offcanvas-title" id="mobileMenuLabel">
                     <div class="d-flex align-items-center gap-2">
@@ -107,13 +99,7 @@ if (isset($_COOKIE['visitor_email'])) {
 
                 <hr class="my-3">
 
-                <div class="mb-3">
-                    <p class="small text-muted mb-2"><?php echo t('language'); ?></p>
-                    <div class="d-flex gap-2">
-                        <a href="<?php echo BASE_URL; ?>/change_language.php?lang=en" class="btn btn-outline-secondary flex-fill">🇬🇧 English</a>
-                        <a href="<?php echo BASE_URL; ?>/change_language.php?lang=fr" class="btn btn-outline-secondary flex-fill">🇫🇷 Français</a>
-                    </div>
-                </div>
+                <!-- Mobile language selector removed; site is English-only -->
 
                 <a href="https://wa.me/<?php echo $settings['whatsapp_number'] ?? ''; ?>" target="_blank" class="btn btn-success w-100 py-2"> <i class="fab fa-whatsapp me-2"></i> <?php echo t('contact_whatsapp'); ?></a>
             </div>

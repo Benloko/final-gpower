@@ -77,13 +77,13 @@ require_once __DIR__ . '/includes/header.php';
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
             <div>
                 <h4 class="mb-1 fw-bold text-dark">
-                    <i class="fas fa-box-open text-primary me-2"></i>Gestion des Produits
+                    <i class="fas fa-box-open text-primary me-2"></i>Manage Products
                 </h4>
-                <p class="text-muted small mb-0">Gérer votre catalogue de produits</p>
+                <p class="text-muted small mb-0">Manage your product catalog</p>
             </div>
             <a href="product-form.php" class="btn btn-primary rounded-pill d-flex align-items-center gap-2 shadow-sm px-4 flex-shrink-0">
                 <i class="fas fa-plus-circle"></i>
-                <span>Ajouter un Produit</span>
+                <span>Add Product</span>
             </a>
         </div>
     </div>
@@ -99,11 +99,11 @@ require_once __DIR__ . '/includes/header.php';
                     <input type="text" 
                            class="form-control form-control-lg ps-5 pe-5 border-0 shadow-sm" 
                            id="productSearch" 
-                           placeholder="Rechercher un produit par nom, catégorie, prix..."
+                           placeholder="Search products by name, category, price..."
                            style="border-radius: 12px; background-color: #ffffff; font-size: 0.95rem; height: 50px;">
                     <div class="position-absolute" style="right: 0.5rem; top: 50%; transform: translateY(-50%); z-index: 10;">
                         <button class="btn btn-sm btn-light rounded-pill px-3 d-none" id="clearSearch">
-                            <i class="fas fa-times me-1"></i>Effacer
+                            <i class="fas fa-times me-1"></i>Clear
                         </button>
                     </div>
                 </div>
@@ -221,10 +221,10 @@ require_once __DIR__ . '/includes/header.php';
     <?php if (count($products) > $displayLimit): ?>
     <div class="card-footer bg-white border-0 text-center py-3">
         <button id="loadMoreBtn" class="btn btn-outline-primary rounded-pill px-4" onclick="loadMoreProducts()">
-            <i class="fas fa-chevron-down me-2"></i>Voir plus
+            <i class="fas fa-chevron-down me-2"></i>See more
         </button>
         <button id="showLessBtn" class="btn btn-outline-secondary rounded-pill px-4" style="display: none;" onclick="showLessProducts()">
-            <i class="fas fa-chevron-up me-2"></i>Voir moins
+            <i class="fas fa-chevron-up me-2"></i>See less
         </button>
     </div>
     <?php endif; ?>
@@ -240,16 +240,16 @@ require_once __DIR__ . '/includes/header.php';
                         <i class="fas fa-trash-alt text-danger" style="font-size: 1.5rem;"></i>
                     </div>
                 </div>
-                <h5 class="fw-bold mb-2">Supprimer ce produit ?</h5>
+                <h5 class="fw-bold mb-2">Delete this product?</h5>
                 <p class="text-muted mb-0" id="deleteProductName"></p>
-                <p class="text-muted small mt-2">Cette action supprimera le produit et toutes ses images.</p>
+                <p class="text-muted small mt-2">This will delete the product and all its images.</p>
             </div>
             <div class="modal-footer border-0 justify-content-center pb-4 pt-0">
                 <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-1"></i>Annuler
+                    <i class="fas fa-times me-1"></i>Cancel
                 </button>
                 <a href="#" id="confirmDeleteBtn" class="btn btn-danger rounded-pill px-4">
-                    <i class="fas fa-trash me-1"></i>Supprimer
+                    <i class="fas fa-trash me-1"></i>Delete
                 </a>
             </div>
         </div>
