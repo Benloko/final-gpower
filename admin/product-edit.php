@@ -4,6 +4,10 @@ requireLogin();
 
 $pdo = getPDOConnection();
 
+// Optional columns (may not exist on older schemas)
+$hasIdentificationNumber = false;
+$pdfColumn = null; // 'pdf_file' or 'pdf_path'
+
 $product = null;
 $error = '';
 $success = '';
@@ -17,8 +21,28 @@ if (isset($_GET['id'])) {
         $colStmt = $pdo->prepare("SELECT COUNT(*) as cnt FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'products' AND COLUMN_NAME = 'quantity'");
         $colStmt->execute([DB_NAME]);
         $hasQuantity = $colStmt->fetch()['cnt'] > 0;
+
+        $colStmt = $pdo->prepare("SELECT COUNT(*) as cnt FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'products' AND COLUMN_NAME = 'identification_number'");
+        $colStmt->execute([DB_NAME]);
+        $hasIdentificationNumber = $colStmt->fetch()['cnt'] > 0;
+
+        $colStmt = $pdo->prepare("SELECT COUNT(*) as cnt FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'products' AND COLUMN_NAME = 'pdf_file'");
+        $colStmt->execute([DB_NAME]);
+        $hasPdfFile = $colStmt->fetch()['cnt'] > 0;
+
+        $colStmt = $pdo->prepare("SELECT COUNT(*) as cnt FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'products' AND COLUMN_NAME = 'pdf_path'");
+        $colStmt->execute([DB_NAME]);
+        $hasPdfPath = $colStmt->fetch()['cnt'] > 0;
+
+        if ($hasPdfFile) {
+            $pdfColumn = 'pdf_file';
+        } elseif ($hasPdfPath) {
+            $pdfColumn = 'pdf_path';
+        }
     } catch (Exception $e) {
         $hasQuantity = false;
+        $hasIdentificationNumber = false;
+        $pdfColumn = null;
     }
 
     $stmt = $pdo->prepare("SELECT * FROM products WHERE id = ?");
@@ -126,6 +150,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($name) || $price <= 0) {
         $error = 'Please fill in all required fields';
     } else {
+        if (!$hasIdentificationNumber) {
+            $error = 'Database schema is missing `products.identification_number`. Please add the column (migration 006) then retry.';
+        }
+
+        if (!empty($error)) {
+            // Stop processing uploads/update
+        } else {
         // Ensure PDF upload directory exists
         if (!is_dir(PRODUCT_PDF_PATH)) {
             @mkdir(PRODUCT_PDF_PATH, 0755, true);
@@ -152,9 +183,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         
         // Handle PDF upload
-        $pdf_file = $product['pdf_file'] ?? '';
+        $pdf_file = $product['pdf_file'] ?? ($product['pdf_path'] ?? '');
+
+        // Handle PDF deletion request (only if schema has a PDF column)
+        $delete_pdf_requested = !empty($pdfColumn) && isset($_POST['delete_pdf']) && (string)$_POST['delete_pdf'] === '1';
+        if ($delete_pdf_requested) {
+            if ($pdf_file && file_exists(PRODUCT_PDF_PATH . $pdf_file)) {
+                @unlink(PRODUCT_PDF_PATH . $pdf_file);
+            }
+            $pdf_file = null;
+        }
         
-        if (isset($_FILES['pdf_file']) && $_FILES['pdf_file']['error'] == 0) {
+        if (!empty($pdfColumn) && isset($_FILES['pdf_file']) && $_FILES['pdf_file']['error'] == 0) {
             $file_ext = strtolower(pathinfo($_FILES['pdf_file']['name'], PATHINFO_EXTENSION));
             
             if (in_array($file_ext, ALLOWED_PDF_EXTENSIONS) && $_FILES['pdf_file']['size'] <= MAX_PDF_FILE_SIZE) {
@@ -171,20 +211,50 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         }
         
-        // Update product (include quantity and pdf_file if present in schema)
-        if (!empty($hasQuantity)) {
-            $stmt = $pdo->prepare("UPDATE products 
-                                   SET name = ?, identification_number = ?, slug = ?, location = ?, specifications = ?, 
-                                       price = ?, quantity = ?, main_image = ?, pdf_file = ?, status = ?, featured = ? 
-                                   WHERE id = ?");
-            $stmt->execute([$name, $identification_number, $slug, $location, $specifications, $price, $quantity, $main_image, $pdf_file, $status, $featured, $product['id']]);
-        } else {
-            $stmt = $pdo->prepare("UPDATE products 
-                                   SET name = ?, identification_number = ?, slug = ?, location = ?, specifications = ?, 
-                                       price = ?, main_image = ?, pdf_file = ?, status = ?, featured = ? 
-                                   WHERE id = ?");
-            $stmt->execute([$name, $identification_number, $slug, $location, $specifications, $price, $main_image, $pdf_file, $status, $featured, $product['id']]);
+        // Update product (only include columns that exist in the current schema)
+        $setParts = ['name = ?'];
+        $values = [$name];
+
+        if ($hasIdentificationNumber) {
+            $setParts[] = 'identification_number = ?';
+            $values[] = $identification_number;
         }
+
+        $setParts[] = 'slug = ?';
+        $values[] = $slug;
+
+        $setParts[] = 'location = ?';
+        $values[] = $location;
+
+        $setParts[] = 'specifications = ?';
+        $values[] = $specifications;
+
+        $setParts[] = 'price = ?';
+        $values[] = $price;
+
+        if (!empty($hasQuantity)) {
+            $setParts[] = 'quantity = ?';
+            $values[] = $quantity;
+        }
+
+        $setParts[] = 'main_image = ?';
+        $values[] = $main_image;
+
+        if (!empty($pdfColumn)) {
+            $setParts[] = $pdfColumn . ' = ?';
+            $values[] = $pdf_file;
+        }
+
+        $setParts[] = 'status = ?';
+        $values[] = $status;
+
+        $setParts[] = 'featured = ?';
+        $values[] = $featured;
+
+        $values[] = $product['id'];
+
+        $stmt = $pdo->prepare("UPDATE products SET " . implode(', ', $setParts) . " WHERE id = ?");
+        $stmt->execute($values);
         
         // Handle new gallery images
         if (isset($_FILES['gallery_images'])) {
@@ -245,6 +315,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt = $pdo->prepare("SELECT * FROM product_images WHERE product_id = ? ORDER BY display_order");
         $stmt->execute([$product['id']]);
         $product_images = $stmt->fetchAll();
+        }
     }
 }
 
@@ -320,7 +391,7 @@ require_once __DIR__ . '/includes/header.php';
                             <span class="input-group-text bg-light border-1">
                                 <i class="fas fa-hashtag text-secondary"></i>
                             </span>
-                            <input type="text" 
+                               <input type="text" 
                                    name="identification_number" 
                                    class="form-control border-1" 
                                    value="<?php echo htmlspecialchars($product['identification_number'] ?? ''); ?>"
@@ -534,22 +605,22 @@ require_once __DIR__ . '/includes/header.php';
                         <label class="form-label fw-semibold small text-muted mb-2">
                             <i class="fas fa-file-pdf text-danger me-1"></i>Product Details PDF (Datasheet, Specs, Manual)
                         </label>
-                        <?php if ($product['pdf_file'] ?? false): ?>
+                        <?php $pdf_name = $product['pdf_file'] ?? ($product['pdf_path'] ?? ''); ?>
+                        <?php if ($pdf_name): ?>
                         <div class="mb-2 p-2 bg-light rounded-2 d-flex justify-content-between align-items-center">
                             <div>
                                 <i class="fas fa-file-pdf text-danger me-2"></i>
-                                <span class="fw-semibold small"><?php echo htmlspecialchars($product['pdf_file']); ?></span>
+                                <span class="fw-semibold small"><?php echo htmlspecialchars($pdf_name); ?></span>
                             </div>
-                            <button type="button" class="btn btn-sm btn-outline-danger rounded-circle" onclick="document.getElementById('pdfDeleteBtn').click();" style="width: 28px; height: 28px; padding: 0; display: flex; align-items: center; justify-content: center;">
+                            <button type="submit" name="delete_pdf" value="1" class="btn btn-sm btn-outline-danger rounded-circle" style="width: 28px; height: 28px; padding: 0; display: flex; align-items: center; justify-content: center;">
                                 <i class="fas fa-trash" style="font-size: 0.6rem;"></i>
                             </button>
-                            <input type="hidden" id="pdfDeleteBtn" name="delete_pdf" value="0">
                         </div>
                         <small class="text-muted d-block mb-2">
                             <i class="fas fa-check-circle text-success me-1"></i>Current PDF attached
                         </small>
                         <?php endif; ?>
-                        <div class="border border-2 border-dashed rounded-3 p-3 text-center bg-light position-relative <?php echo ($product['pdf_file'] ?? false) ? 'opacity-75' : ''; ?>" style="cursor: pointer;">
+                        <div class="border border-2 border-dashed rounded-3 p-3 text-center bg-light position-relative <?php echo ($pdf_name ? 'opacity-75' : ''); ?>" style="cursor: pointer;">
                             <i class="fas fa-file-pdf text-danger mb-2" style="font-size: 1.5rem; opacity: 0.4;"></i>
                             <p class="text-muted small mb-0 fw-semibold">Click to upload/replace PDF</p>
                             <p class="text-muted mb-0" style="font-size: 0.65rem;">Max 10MB • PDF only</p>

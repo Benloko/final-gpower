@@ -6,12 +6,35 @@ $pdo = getPDOConnection();
 
 // Check if products table has a 'quantity' column
 $hasQuantity = false;
+// Optional columns (may not exist on older schemas)
+$hasIdentificationNumber = false;
+$pdfColumn = null; // 'pdf_file' or 'pdf_path'
 try {
     $colStmt = $pdo->prepare("SELECT COUNT(*) as cnt FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'products' AND COLUMN_NAME = 'quantity'");
     $colStmt->execute([DB_NAME]);
     $hasQuantity = $colStmt->fetch()['cnt'] > 0;
+
+    $colStmt = $pdo->prepare("SELECT COUNT(*) as cnt FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'products' AND COLUMN_NAME = 'identification_number'");
+    $colStmt->execute([DB_NAME]);
+    $hasIdentificationNumber = $colStmt->fetch()['cnt'] > 0;
+
+    $colStmt = $pdo->prepare("SELECT COUNT(*) as cnt FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'products' AND COLUMN_NAME = 'pdf_file'");
+    $colStmt->execute([DB_NAME]);
+    $hasPdfFile = $colStmt->fetch()['cnt'] > 0;
+
+    $colStmt = $pdo->prepare("SELECT COUNT(*) as cnt FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'products' AND COLUMN_NAME = 'pdf_path'");
+    $colStmt->execute([DB_NAME]);
+    $hasPdfPath = $colStmt->fetch()['cnt'] > 0;
+
+    if ($hasPdfFile) {
+        $pdfColumn = 'pdf_file';
+    } elseif ($hasPdfPath) {
+        $pdfColumn = 'pdf_path';
+    }
 } catch (Exception $e) {
     $hasQuantity = false;
+    $hasIdentificationNumber = false;
+    $pdfColumn = null;
 }
 $error = '';
 $success = '';
@@ -49,10 +72,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $status = sanitize($_POST['status']);
     $featured = isset($_POST['featured']) ? 1 : 0;
     $slug = strtolower(preg_replace('/[^a-z0-9]+/', '-', $name));
+    $identification_number = sanitize($_POST['identification_number'] ?? '');
     
     if (empty($name) || $price <= 0) {
         $error = 'Please fill in all required fields';
     } else {
+        if (!$hasIdentificationNumber) {
+            $error = 'Database schema is missing `products.identification_number`. Please add the column (migration 006) then retry.';
+        }
+
+        if (!empty($error)) {
+            // Stop before uploads/insert
+        } else {
         // Ensure PDF upload directory exists
         if (!is_dir(PRODUCT_PDF_PATH)) {
             @mkdir(PRODUCT_PDF_PATH, 0755, true);
@@ -74,10 +105,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         }
         
-        // Handle PDF upload
+        // Handle PDF upload (only if schema has a PDF column)
         $pdf_file = '';
-        
-        if (isset($_FILES['pdf_file']) && $_FILES['pdf_file']['error'] == 0) {
+
+        if (!empty($pdfColumn) && isset($_FILES['pdf_file']) && $_FILES['pdf_file']['error'] == 0) {
             $file_ext = strtolower(pathinfo($_FILES['pdf_file']['name'], PATHINFO_EXTENSION));
             
             if (in_array($file_ext, ALLOWED_PDF_EXTENSIONS) && $_FILES['pdf_file']['size'] <= MAX_PDF_FILE_SIZE) {
@@ -90,19 +121,49 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         }
         
-        // Collect identification number
-        $identification_number = sanitize($_POST['identification_number'] ?? '');
-        
-        // Insert product (include quantity, identification_number, and pdf_file if the columns exist)
-        if ($hasQuantity) {
-            $stmt = $pdo->prepare("INSERT INTO products (name, identification_number, slug, location, specifications, price, quantity, main_image, pdf_file, status, featured) 
-                                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->execute([$name, $identification_number, $slug, $location, $specifications, $price, $quantity, $main_image, $pdf_file, $status, $featured]);
-        } else {
-            $stmt = $pdo->prepare("INSERT INTO products (name, identification_number, slug, location, specifications, price, main_image, pdf_file, status, featured) 
-                                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->execute([$name, $identification_number, $slug, $location, $specifications, $price, $main_image, $pdf_file, $status, $featured]);
+        // Insert product (only include columns that exist in the current schema)
+        $columns = ['name'];
+        $values = [$name];
+
+        if ($hasIdentificationNumber) {
+            $columns[] = 'identification_number';
+            $values[] = $identification_number;
         }
+
+        $columns[] = 'slug';
+        $values[] = $slug;
+
+        $columns[] = 'location';
+        $values[] = $location;
+
+        $columns[] = 'specifications';
+        $values[] = $specifications;
+
+        $columns[] = 'price';
+        $values[] = $price;
+
+        if ($hasQuantity) {
+            $columns[] = 'quantity';
+            $values[] = $quantity;
+        }
+
+        $columns[] = 'main_image';
+        $values[] = $main_image;
+
+        if (!empty($pdfColumn)) {
+            $columns[] = $pdfColumn;
+            $values[] = $pdf_file;
+        }
+
+        $columns[] = 'status';
+        $values[] = $status;
+
+        $columns[] = 'featured';
+        $values[] = $featured;
+
+        $placeholders = implode(', ', array_fill(0, count($columns), '?'));
+        $stmt = $pdo->prepare("INSERT INTO products (" . implode(', ', $columns) . ") VALUES ($placeholders)");
+        $stmt->execute($values);
         $product_id = $pdo->lastInsertId();
         
         // Handle gallery images
@@ -150,6 +211,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         
         redirect('product-edit.php?id=' . $product_id);
+        }
     }
 }
 
@@ -374,11 +436,14 @@ require_once __DIR__ . '/includes/header.php';
                             <input type="text" 
                                    name="identification_number" 
                                    class="form-control border-1" 
-                                   placeholder="e.g. SN-2025-001, MODEL-XYZ-789">
+                                   placeholder="e.g. SN-2025-001, MODEL-XYZ-789"
+                                   value="<?php echo isset($_POST['identification_number']) ? htmlspecialchars($_POST['identification_number']) : ''; ?>">
                         </div>
-                        <small class="text-muted d-block mt-1">
-                            <i class="fas fa-info-circle me-1"></i>Unique serial, model code, or product ID
-                        </small>
+                        <?php if (!$hasIdentificationNumber): ?>
+                            <small class="text-danger d-block mt-1">Database missing column <strong>products.identification_number</strong>. Run migration 006.</small>
+                        <?php else: ?>
+                            <small class="text-muted d-block mt-1"><i class="fas fa-info-circle me-1"></i>Optional (you can reuse the same number on multiple products).</small>
+                        <?php endif; ?>
                     </div>
 
                     <div class="mb-3">

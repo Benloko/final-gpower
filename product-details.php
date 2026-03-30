@@ -220,9 +220,10 @@ $product_images = $stmt->fetchAll();
                         </div>
 
                         <!-- PDF Download Section -->
-                        <?php if ($product['pdf_file'] ?? false): ?>
+                        <?php $pdf_name = $product['pdf_file'] ?? ($product['pdf_path'] ?? ''); ?>
+                        <?php if ($pdf_name): ?>
                         <div class="col-md-6">
-                            <a href="<?php echo BASE_URL; ?>/uploads/pdfs/<?php echo htmlspecialchars($product['pdf_file']); ?>" 
+                            <a href="<?php echo BASE_URL; ?>/uploads/pdfs/<?php echo htmlspecialchars($pdf_name); ?>" 
                                class="btn w-100 h-100 rounded-3 d-flex align-items-center justify-content-center flex-column gap-2 shadow-sm"
                                style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border: none; padding: 1rem; text-decoration: none; transition: transform 0.2s ease;"
                                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 16px rgba(245, 87, 108, 0.3)';"

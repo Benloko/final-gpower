@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS products (
     id INT AUTO_INCREMENT PRIMARY KEY,
     category_id INT NOT NULL,
     name VARCHAR(200) NOT NULL,
+    identification_number VARCHAR(100) NULL,
     slug VARCHAR(200) UNIQUE NOT NULL,
     description TEXT,
     specifications TEXT,
