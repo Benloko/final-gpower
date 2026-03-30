@@ -8,10 +8,15 @@ $basePathOnly = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 // Get settings from database
 $pdo = getPDOConnection();
-$stmt = $pdo->query("SELECT setting_key, setting_value FROM settings");
 $settings = [];
-while ($row = $stmt->fetch()) {
-    $settings[$row['setting_key']] = $row['setting_value'];
+try {
+    $stmt = $pdo->query("SELECT setting_key, setting_value FROM settings");
+    while ($row = $stmt->fetch()) {
+        $settings[$row['setting_key']] = $row['setting_value'];
+    }
+} catch (PDOException $e) {
+    // Table doesn't exist yet (fresh install / incomplete import)
+    $settings = [];
 }
 
 // Check if user is subscribed to newsletter

@@ -4,8 +4,13 @@ require_once __DIR__ . '/includes/helpers.php';
 
 // Get settings for WhatsApp number
 $pdo = getPDOConnection();
-$stmt = $pdo->query("SELECT setting_value FROM settings WHERE setting_key = 'whatsapp_number'");
-$whatsapp_number = $stmt->fetchColumn() ?: '2250707070707';
+$whatsapp_number = '2250707070707';
+try {
+    $stmt = $pdo->query("SELECT setting_value FROM settings WHERE setting_key = 'whatsapp_number'");
+    $whatsapp_number = $stmt->fetchColumn() ?: $whatsapp_number;
+} catch (PDOException $e) {
+    // Table doesn't exist yet
+}
 
 $query = $_GET['search'] ?? '';
 

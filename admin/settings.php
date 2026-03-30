@@ -4,13 +4,25 @@ requireLogin();
 
 $pdo = getPDOConnection();
 
+// Detect missing settings table early (common on incomplete DB import)
+$settingsTableMissing = false;
+try {
+    $pdo->query("SELECT 1 FROM settings LIMIT 1");
+} catch (PDOException $e) {
+    $settingsTableMissing = true;
+}
+
 $error = '';
 $success = '';
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if ($settingsTableMissing) {
+        $error = 'La table `settings` est introuvable dans la base de données. Importez le schéma (database.sql) dans la bonne base puis réessayez.';
+    }
+
     // Handle General Settings
-    if (isset($_POST['action']) && $_POST['action'] == 'general') {
+    if (!$settingsTableMissing && isset($_POST['action']) && $_POST['action'] == 'general') {
         $site_name = sanitize($_POST['site_name']);
         $site_email = sanitize($_POST['site_email']);
         $site_phone = sanitize($_POST['site_phone']);
@@ -34,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     
     // Handle Contact Settings
-    if (isset($_POST['action']) && $_POST['action'] == 'contact') {
+    if (!$settingsTableMissing && isset($_POST['action']) && $_POST['action'] == 'contact') {
         $whatsapp_number = sanitize($_POST['whatsapp_number']);
         
         $stmt = $pdo->prepare("UPDATE settings SET setting_value = ? WHERE setting_key = ?");
@@ -106,11 +118,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 // Get current settings
-$stmt = $pdo->query("SELECT setting_key, setting_value FROM settings");
 $settings = [];
-while ($row = $stmt->fetch()) {
-    $settings[$row['setting_key']] = $row['setting_value'];
+if (!$settingsTableMissing) {
+    $stmt = $pdo->query("SELECT setting_key, setting_value FROM settings");
+    while ($row = $stmt->fetch()) {
+        $settings[$row['setting_key']] = $row['setting_value'];
+    }
+} else {
+    if (empty($error)) {
+        $error = 'La table `settings` est introuvable dans la base de données. Importez le schéma (database.sql) dans la bonne base.';
+    }
 }
+
+// Avoid undefined index notices in the template
+$settings = array_merge([
+    'site_name' => '',
+    'site_email' => '',
+    'site_phone' => '',
+    'whatsapp_number' => '',
+], $settings);
 
 // Get current admin info
 $stmt = $pdo->prepare("SELECT username, email FROM admins WHERE id = ?");
