@@ -12,7 +12,7 @@ if (isset($_GET['delete'])) {
     redirect('categories.php');
 }
 
-// Get all categories
+//  Get all categories
 $stmt = $pdo->query("SELECT c.*, COUNT(p.id) as product_count 
                      FROM categories c 
                      LEFT JOIN products p ON c.id = p.category_id 
