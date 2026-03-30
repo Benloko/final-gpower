@@ -26,7 +26,7 @@ if (isset($_GET['unsubscribe'])) {
         $success = "Subscriber unsubscribed!";
     } catch (Exception $e) {
         $error = "Erreur.";
-    }
+    }  
 }
 
 if (isset($_GET['reactivate'])) {
@@ -79,7 +79,7 @@ $stmt = $pdo->prepare("SELECT * FROM newsletter_subscribers $where_clause ORDER 
 $stmt->execute($params);
 $subscribers = $stmt->fetchAll();
 
-// Get counts
+//   Get counts
 $stmt = $pdo->query("SELECT 
     COUNT(*) as total,
     SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as active_count,
