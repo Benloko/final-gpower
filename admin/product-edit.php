@@ -482,15 +482,7 @@ require_once __DIR__ . '/includes/header.php';
                         </div>
 
                         <?php if (!empty($hasQuantity)): ?>
-                        <div class="col-md-4 mb-2">
-                            <label class="form-label fw-semibold small text-muted mb-1">Quantity</label>
-                            <input type="number" 
-                                   name="quantity" 
-                                   class="form-control border-1" 
-                                   min="0"
-                                   value="<?php echo isset($product['quantity']) ? (int)$product['quantity'] : 0; ?>"
-                                   placeholder="0">
-                        </div>
+
                         <?php endif; ?>
 
                         <div class="col-md-4 mb-2">
