@@ -42,12 +42,6 @@ try {
         <div class="col">
             <div class="card product-card-modern h-100 border-0 bg-white shadow-sm rounded-3 position-relative overflow-hidden" data-href="<?php echo BASE_URL; ?>/product-details.php?id=<?php echo $product['id']; ?>">
                 
-                <div class="position-absolute top-0 start-0 m-2.5 z-2">
-                    <span class="badge bg-dark bg-opacity-75 text-warning backdrop-blur border border-white border-opacity-20 rounded-circle p-1.5 shadow-sm" title="Verified Machinery">
-                        <i class="fas fa-shield-alt"></i>
-                    </span>
-                </div>
-
                 <div class="product-image-container position-relative overflow-hidden" style="border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem;">
                     <a href="<?php echo BASE_URL; ?>/product-details.php?id=<?php echo $product['id']; ?>" class="d-block text-decoration-none">
                         <?php $img_url = product_image_url($product['main_image']); ?>

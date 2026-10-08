@@ -163,38 +163,6 @@ require_once __DIR__ . '/includes/header.php';
         </div>
     </div>
 
-    <!-- Call to Action -->
-    <div class="row justify-content-center mb-5">
-        <div class="col-lg-10">
-            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
-                <div class="card-body p-0">
-                    <div class="row g-0 align-items-center">
-                        <div class="col-md-7 p-5">
-                            <h3 class="fw-bold mb-3" style="color: #2d3748;">Ready to Get Started?</h3>
-                                <p class="text-muted mb-4" style="font-size: 1.05rem;">
-                                    Explore our complete catalog of professional equipment or contact our team for personalized advice. We are here to support you on every project.
-                                </p>
-                            <div class="d-flex flex-wrap gap-3">
-                                <a href="<?php echo BASE_URL; ?>/index.php" class="btn btn-lg rounded-pill px-4 shadow-sm text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                                    <i class="fas fa-shopping-bag me-2"></i>View Our Products
-                                </a>
-                                <a href="<?php echo BASE_URL; ?>/contact.php" class="btn btn-success btn-lg rounded-pill px-4 shadow-sm">
-                                    <i class="fab fa-whatsapp me-2"></i>Contact Us
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-md-5 d-none d-md-block">
-                            <div class="p-5 text-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); height: 100%;">
-                                <i class="fas fa-headset text-white mb-3" style="font-size: 5rem; opacity: 0.9;"></i>
-                                <h4 class="text-white fw-bold mb-2">Support 24/7</h4>
-                                <p class="text-white mb-0" style="opacity: 0.9;">A team ready to assist you</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 
 <style>

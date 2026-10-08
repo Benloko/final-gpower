@@ -96,14 +96,6 @@ document.addEventListener('DOMContentLoaded', function() {
         productsGrid.appendChild(noResultsMsg);
 
         searchInputs.forEach(input => {
-            // Prevent form submit page reload
-            const parentForm = input.closest('form');
-            if (parentForm) {
-                parentForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                });
-            }
-
             input.addEventListener('input', function() {
                 const query = this.value.trim().toLowerCase();
                 let visibleCount = 0;
@@ -184,7 +176,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Make entire product card clickable (except interactive children like buttons/links)
-    document.querySelectorAll('.product-card[data-href]').forEach(card => {
+    document.querySelectorAll('.product-card[data-href], .product-card-modern[data-href]').forEach(card => {
         // Visual affordance
         card.style.cursor = 'pointer';
 
@@ -199,6 +191,17 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+    // Featured Equipment Photo Slider (3-second auto-slide)
+    const eqCarouselEl = document.getElementById('equipmentPhotoSlider') || document.getElementById('equipmentCarousel');
+    if (eqCarouselEl && typeof bootstrap !== 'undefined' && bootstrap.Carousel) {
+        new bootstrap.Carousel(eqCarouselEl, {
+            interval: 3000,
+            ride: 'carousel',
+            pause: 'hover',
+            wrap: true
+        });
+    }
 
     // Language selector removed — site is English-only.
     // No-op placeholder to keep file structure consistent.

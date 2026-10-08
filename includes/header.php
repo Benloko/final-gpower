@@ -102,7 +102,7 @@ if (isset($_COOKIE['visitor_email'])) {
 
                 <!-- Right controls: WhatsApp + mobile toggler -->
                 <div class="d-flex align-items-center gap-2">
-                    <a href="https://wa.me/<?php echo $settings['whatsapp_number'] ?? ''; ?>" target="_blank" class="btn btn-success btn-whatsapp-desktop d-none d-lg-inline-flex align-items-center justify-content-center rounded-pill px-3 py-2 shadow-sm" aria-label="WhatsApp">
+                    <a href="https://wa.me/<?php echo $settings['whatsapp_number'] ?? ''; ?>" target="_blank" class="btn btn-success btn-whatsapp-desktop d-none d-lg-inline-flex align-items-center justify-content-center rounded-3 px-3 py-2 shadow-sm" aria-label="WhatsApp">
                         <i class="fab fa-whatsapp me-2" aria-hidden="true" style="font-size: 1.05rem;"></i>
                         <span class="whatsapp-label fw-bold" style="font-size: 0.85rem;">Request Quote</span>
                     </a>

@@ -1,6 +1,7 @@
 <?php
-$page_title = 'Product Details';
-require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/config/config.php';
+require_once __DIR__ . '/config/database.php';
+$pdo = getPDOConnection();
 
 // Get product ID
 $product_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
@@ -25,8 +26,12 @@ $stmt->execute([$product_id]);
 $product = $stmt->fetch();
 
 if (!$product) {
-    redirect(BASE_URL . '/');
+    header("Location: " . BASE_URL . "/products.php");
+    exit;
 }
+
+$page_title = $product['name'] . ' - Details';
+require_once __DIR__ . '/includes/header.php';
 
 // No server-side product translations used — product content is authored in English only.
 
@@ -59,16 +64,27 @@ $stmt = $pdo->prepare("SELECT * FROM product_images WHERE product_id = ? ORDER B
 $stmt->execute([$product_id]);
 $product_images = $stmt->fetchAll();
 
+// Get suggested products (random active products excluding current)
+$related_stmt = $pdo->prepare("SELECT p.* FROM products p WHERE p.status = 'active' AND p.id != ? ORDER BY RAND() LIMIT 4");
+$related_stmt->execute([$product_id]);
+$related_products = $related_stmt->fetchAll();
 ?>
 
-<div class="container my-5">
-    <?php if ($from_admin): ?>
+<div class="container my-4">
+    <!-- Top-Left Back Button -->
     <div class="mb-3">
-        <a href="<?php echo BASE_URL; ?>/admin/product-edit.php?id=<?php echo $product_id; ?>" class="btn btn-outline-secondary btn-sm rounded-pill">
-            <i class="fas fa-arrow-left me-1"></i>Back to edit
-        </a>
+        <?php if ($from_admin): ?>
+            <a href="<?php echo BASE_URL; ?>/admin/product-edit.php?id=<?php echo $product_id; ?>" class="btn btn-sm btn-outline-secondary rounded-2 px-3 py-1.5 text-decoration-none d-inline-flex align-items-center gap-2" style="font-size: 0.85rem;">
+                <i class="fas fa-arrow-left small"></i>
+                <span>Back to edit</span>
+            </a>
+        <?php else: ?>
+            <a href="<?php echo BASE_URL; ?>/products.php" class="btn btn-sm btn-outline-secondary rounded-2 px-3 py-1.5 text-decoration-none d-inline-flex align-items-center gap-2" style="font-size: 0.85rem;">
+                <i class="fas fa-chevron-left small"></i>
+                <span>Back to Catalog</span>
+            </a>
+        <?php endif; ?>
     </div>
-    <?php endif; ?>
     
     <div class="row justify-content-center">
         <div class="col-lg-6 col-md-8">
@@ -167,77 +183,62 @@ $product_images = $stmt->fetchAll();
                     <?php endif; ?>
                     
                     <!-- Action Buttons -->
-                    <div class="row g-2 mb-4">
+                    <div class="row g-2 mb-2">
                         <div class="col-6">
-                                     <a href="https://wa.me/<?php echo $settings['whatsapp_number']; ?>?text=<?php echo urlencode('Hello, I am interested in ' . $product['name']); ?>" 
-                               class="btn btn-dark w-100 rounded-4 d-flex align-items-center justify-content-center gap-2 shadow-sm"
+                            <a href="https://wa.me/<?php echo $settings['whatsapp_number']; ?>?text=<?php echo urlencode('Hello, I am interested in ' . $product['name']); ?>" 
+                               class="btn btn-dark w-100 rounded-3 d-flex align-items-center justify-content-center gap-2 shadow-sm"
                                target="_blank"
-                               style="background: #25D366; border: none; padding: 0.6rem 1rem; font-size: 0.9rem;">
+                               style="background: #25D366; border: none; padding: 0.6rem 1rem; font-size: 0.9rem; height: 42px;">
                                 <i class="fab fa-whatsapp"></i>
                                 <span class="fw-bold">WhatsApp</span>
                             </a>
                         </div>
                         
                         <div class="col-6">
-                                     <a href="mailto:<?php echo $settings['site_email'] ?? 'contact@gpower.ci'; ?>?subject=<?php echo urlencode('Inquiry: ' . $product['name']); ?>&body=<?php echo urlencode('Hello, I would like more information about ' . $product['name'] . ' priced at ' . format_price($product['price']) . '.'); ?>" 
-                               class="btn btn-dark w-100 rounded-4 d-flex align-items-center justify-content-center gap-2 shadow-sm"
-                               style="padding: 0.6rem 1rem; font-size: 0.9rem;">
+                            <a href="mailto:<?php echo $settings['site_email'] ?? 'contact@gpower.ci'; ?>?subject=<?php echo urlencode('Inquiry: ' . $product['name']); ?>&body=<?php echo urlencode('Hello, I would like more information about ' . $product['name'] . ' priced at ' . format_price($product['price']) . '.'); ?>" 
+                               class="btn btn-dark w-100 rounded-3 d-flex align-items-center justify-content-center gap-2 shadow-sm"
+                               style="padding: 0.6rem 1rem; font-size: 0.9rem; height: 42px;">
                                 <i class="fas fa-envelope"></i>
                                 <span class="fw-bold">Email</span>
                             </a>
                         </div>
                     </div>
 
-                    <!-- Stock Status & PDF Section -->
+                    <!-- Stock Status & PDF Section (Slim & Same Height as Action Buttons) -->
+                    <?php 
+                    $quantity = (int)$product['quantity'];
+                    if ($quantity > 10) {
+                        $badge_style = 'background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46;';
+                        $badge_text = 'In Stock (' . number_format($quantity) . ' units)';
+                        $badge_icon = 'check-circle';
+                    } elseif ($quantity > 0) {
+                        $badge_style = 'background: #fffbeb; border: 1px solid #fde68a; color: #92400e;';
+                        $badge_text = 'Limited Stock (' . number_format($quantity) . ' ' . ($quantity > 1 ? 'units' : 'unit') . ')';
+                        $badge_icon = 'exclamation-circle';
+                    } else {
+                        $badge_style = 'background: #fef2f2; border: 1px solid #fecaca; color: #991b1b;';
+                        $badge_text = 'Out of Stock';
+                        $badge_icon = 'times-circle';
+                    }
+                    $pdf_name = $product['pdf_file'] ?? ($product['pdf_path'] ?? '');
+                    ?>
                     <div class="row g-2 mb-4">
-                        <!-- Stock Status Badge -->
-                        <div class="col-md-6">
-                            <div class="p-3 rounded-3 text-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); position: relative; overflow: hidden;">
-                                <div style="position: absolute; top: -50%; right: -50%; width: 200px; height: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 50%;"></div>
-                                <div style="position: relative; z-index: 1;">
-                                    <div class="mb-2">
-                                        <?php 
-                                        $quantity = (int)$product['quantity'];
-                                        if ($quantity > 10) {
-                                            $badge_color = '#10b981'; // green
-                                            $badge_text = 'In Stock';
-                                            $badge_icon = 'check-circle';
-                                        } elseif ($quantity > 0) {
-                                            $badge_color = '#f59e0b'; // amber
-                                            $badge_text = 'Limited Stock';
-                                            $badge_icon = 'exclamation-circle';
-                                        } else {
-                                            $badge_color = '#ef4444'; // red
-                                            $badge_text = 'Out of Stock';
-                                            $badge_icon = 'times-circle';
-                                        }
-                                        ?>
-                                        <i class="fas fa-<?php echo $badge_icon; ?>" style="font-size: 1.5rem; color: white;"></i>
-                                    </div>
-                                    <h6 class="fw-bold text-white mb-1" style="font-size: 0.9rem;"><?php echo $badge_text; ?></h6>
-                                    <div class="fw-bold text-white" style="font-size: 1.5rem;">
-                                        <?php echo number_format($quantity); ?>
-                                        <span style="font-size: 0.85rem; opacity: 0.9;">units</span>
-                                    </div>
-                                </div>
+                        <div class="<?php echo $pdf_name ? 'col-6' : 'col-12'; ?>">
+                            <div class="w-100 rounded-3 d-flex align-items-center justify-content-center gap-2 fw-semibold"
+                                 style="<?php echo $badge_style; ?> padding: 0.6rem 1rem; font-size: 0.88rem; height: 42px;">
+                                <i class="fas fa-<?php echo $badge_icon; ?>"></i>
+                                <span><?php echo $badge_text; ?></span>
                             </div>
                         </div>
 
-                        <!-- PDF Download Section -->
-                        <?php $pdf_name = $product['pdf_file'] ?? ($product['pdf_path'] ?? ''); ?>
                         <?php if ($pdf_name): ?>
-                        <div class="col-md-6">
+                        <div class="col-6">
                             <a href="<?php echo BASE_URL; ?>/uploads/pdfs/<?php echo htmlspecialchars($pdf_name); ?>" 
-                               class="btn w-100 h-100 rounded-3 d-flex align-items-center justify-content-center flex-column gap-2 shadow-sm"
-                               style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border: none; padding: 1rem; text-decoration: none; transition: transform 0.2s ease;"
-                               onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 16px rgba(245, 87, 108, 0.3)';"
-                               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='';"
+                               class="btn btn-outline-danger w-100 rounded-3 d-flex align-items-center justify-content-center gap-2 shadow-none"
+                               style="padding: 0.6rem 1rem; font-size: 0.88rem; height: 42px;"
                                download>
-                                <i class="fas fa-file-pdf" style="font-size: 1.5rem;"></i>
-                                <div>
-                                    <div class="fw-bold" style="font-size: 0.9rem;">Product Details</div>
-                                    <small style="opacity: 0.9; font-size: 0.75rem;">Download PDF & Specs</small>
-                                </div>
+                                <i class="fas fa-file-pdf"></i>
+                                <span class="fw-semibold">Datasheet (PDF)</span>
                             </a>
                         </div>
                         <?php endif; ?>
@@ -278,21 +279,81 @@ $product_images = $stmt->fetchAll();
                     </div>
                     <?php endif; ?>
                     
-                    <!-- Back to Home Button -->
-                    <?php if (!$from_admin): ?>
-                    <div class="mt-4 pt-4 border-top">
-                        <a href="<?php echo BASE_URL; ?>/" 
-                           class="btn btn-outline-dark w-100 rounded-4 d-flex align-items-center justify-content-center gap-2"
-                           style="padding: 0.75rem 1rem; font-size: 0.95rem;">
-                            <i class="fas fa-arrow-left"></i>
-                            <span class="fw-semibold"><?php echo t('back_home'); ?></span>
-                        </a>
-                    </div>
-                    <?php endif; ?>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Suggested Equipment Suggestions -->
+    <?php if (!empty($related_products)): ?>
+    <div class="mt-5 pt-4 border-top border-light" id="suggested">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h5 class="fw-bold mb-1 text-dark">Suggested Machinery</h5>
+                <p class="text-muted small mb-0">Explore other certified industrial generators and turbines.</p>
+            </div>
+            <a href="<?php echo BASE_URL; ?>/products.php" class="btn btn-sm btn-outline-secondary rounded-2 px-3 py-1 text-decoration-none" style="font-size: 0.85rem;">
+                Browse All <i class="fas fa-arrow-right ms-1 small"></i>
+            </a>
+        </div>
+        
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+            <?php foreach ($related_products as $rel): ?>
+            <div class="col">
+                <div class="card product-card product-card-modern h-100 border-0 bg-white shadow-sm rounded-3 position-relative overflow-hidden" data-href="<?php echo BASE_URL; ?>/product-details.php?id=<?php echo $rel['id']; ?>">
+                    
+                    <!-- Image -->
+                    <div class="product-image-container position-relative overflow-hidden" style="border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem;">
+                        <a href="<?php echo BASE_URL; ?>/product-details.php?id=<?php echo $rel['id']; ?>" class="d-block text-decoration-none">
+                            <?php $rel_img = product_image_url($rel['main_image']); ?>
+                            <?php if ($rel_img): ?>
+                                <img src="<?php echo htmlspecialchars($rel_img); ?>" 
+                                     alt="<?php echo htmlspecialchars($rel['name']); ?>" 
+                                     class="w-100" style="height: 180px; object-fit: cover; transition: transform 0.4s ease;">
+                            <?php else: ?>
+                                <?php echo product_image_placeholder('180px', htmlspecialchars($rel['name'])); ?>
+                            <?php endif; ?>
+                        </a>
+                    </div>
+                    
+                    <!-- Card Body -->
+                    <div class="card-body p-3.5 d-flex flex-column justify-content-between">
+                        <div>
+                            <h6 class="product-title fw-bold text-dark text-truncate mb-2" style="font-family: 'Plus Jakarta Sans', sans-serif;">
+                                <a href="<?php echo BASE_URL; ?>/product-details.php?id=<?php echo $rel['id']; ?>" class="text-dark text-decoration-none hover-primary">
+                                    <?php echo htmlspecialchars($rel['name']); ?>
+                                </a>
+                            </h6>
+                            <div class="d-flex align-items-center gap-2 mb-3 text-muted small product-status-line">
+                                <span class="text-danger fw-semibold" style="font-size: 0.78rem;">
+                                    <i class="fas fa-map-marker-alt me-1"></i><?php echo htmlspecialchars($rel['location'] ?? 'Global Depot'); ?>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="pt-3 border-top border-light d-flex align-items-center justify-content-between">
+                            <div>
+                                <div class="text-uppercase text-muted" style="font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px;">ESTIMATED PRICE</div>
+                                <div class="product-price fw-extrabold text-primary" style="font-size: 1.1rem;">
+                                    <?php echo format_price($rel['price']); ?>
+                                </div>
+                            </div>
+
+                            <button type="button" 
+                                    class="btn btn-success rounded-circle d-flex align-items-center justify-content-center shadow-sm product-whatsapp-pulse" 
+                                    style="width: 36px; height: 36px; background: #25D366; border: 0;" 
+                                    onclick="event.stopPropagation(); contactWhatsApp('<?php echo addslashes(htmlspecialchars($rel['name'])); ?>','<?php echo $settings['whatsapp_number'] ?? ''; ?>')" 
+                                    title="Inquire via WhatsApp">
+                                <i class="fab fa-whatsapp fs-6 text-white"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <?php endif; ?>
 </div>
 
 <div style="height: 60px;"></div>
