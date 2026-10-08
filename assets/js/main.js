@@ -77,42 +77,55 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Live Filter Implementation (Grid Update)
-    const searchForms = document.querySelectorAll('.hero-search-form, .sidebar-search-form');
+    // Instant Real-Time Live Search Implementation
+    const searchInputs = document.querySelectorAll('input[name="search"]');
     const productsGrid = document.getElementById('products-grid');
     
     if (productsGrid) {
-        searchForms.forEach(form => {
-            const input = form.querySelector('input[name="search"]');
-            if (!input) return;
+        const productCols = productsGrid.querySelectorAll('.col');
+        
+        // Create dynamic "no results found" alert element
+        let noResultsMsg = document.createElement('div');
+        noResultsMsg.className = 'col-12 text-center py-5 bg-white rounded-3 shadow-sm border border-light my-2 d-none';
+        noResultsMsg.id = 'live-no-results';
+        noResultsMsg.innerHTML = `
+            <div class="mb-2 text-muted opacity-50"><i class="fas fa-search-minus fa-2x"></i></div>
+            <h6 class="fw-bold text-dark mb-1">No Matching Machinery Found</h6>
+            <p class="text-muted small mb-0">Try typing another brand or model (CAT, MAN, Solar, Cummins...)</p>
+        `;
+        productsGrid.appendChild(noResultsMsg);
 
-            // Prevent default form submission
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-            });
-
-            let debounceTimer;
+        searchInputs.forEach(input => {
+            // Prevent form submit page reload
+            const parentForm = input.closest('form');
+            if (parentForm) {
+                parentForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                });
+            }
 
             input.addEventListener('input', function() {
-                const query = this.value.trim();
-                
-                clearTimeout(debounceTimer);
-                
-                debounceTimer = setTimeout(() => {
-                    // Show loading state (optional)
-                    productsGrid.style.opacity = '0.5';
+                const query = this.value.trim().toLowerCase();
+                let visibleCount = 0;
+
+                productCols.forEach(col => {
+                    if (col.id === 'live-no-results') return;
                     
-                    fetch(`ajax_filter_products.php?search=${encodeURIComponent(query)}`)
-                        .then(response => response.text())
-                        .then(html => {
-                            productsGrid.innerHTML = html;
-                            productsGrid.style.opacity = '1';
-                        })
-                        .catch(err => {
-                            console.error('Filter error:', err);
-                            productsGrid.style.opacity = '1';
-                        });
-                }, 300); // Debounce delay
+                    const textContent = col.textContent.toLowerCase();
+                    if (!query || textContent.includes(query)) {
+                        col.style.display = '';
+                        visibleCount++;
+                    } else {
+                        col.style.display = 'none';
+                    }
+                });
+
+                // Toggle empty state message
+                if (visibleCount === 0 && query !== '') {
+                    noResultsMsg.classList.remove('d-none');
+                } else {
+                    noResultsMsg.classList.add('d-none');
+                }
             });
         });
     }

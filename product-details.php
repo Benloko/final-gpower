@@ -76,9 +76,10 @@ $product_images = $stmt->fetchAll();
             <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
                 <!-- Product Images -->
                 <div class="product-images-container bg-white p-3">
-                    <?php if ($product['main_image']): ?>
+                    <?php $main_img_url = product_image_url($product['main_image']); ?>
+                    <?php if ($main_img_url): ?>
                         <div class="main-image-wrapper rounded-3 overflow-hidden mb-3" style="background: #f8f9fa;">
-                            <img src="<?php echo BASE_URL; ?>/uploads/products/<?php echo htmlspecialchars($product['main_image']); ?>" 
+                            <img src="<?php echo htmlspecialchars($main_img_url); ?>" 
                                  class="w-100" 
                                  id="mainProductImage"
                                  alt="<?php echo htmlspecialchars($product['name']); ?>"
@@ -86,7 +87,7 @@ $product_images = $stmt->fetchAll();
                         </div>
                     <?php else: ?>
                         <div class="main-image-wrapper bg-light rounded-3 d-flex align-items-center justify-content-center mb-3" style="height: 400px;">
-                            <i class="fas fa-camera fa-5x text-muted opacity-25"></i>
+                            <?php echo product_image_placeholder('400px'); ?>
                         </div>
                     <?php endif; ?>
                     
@@ -94,22 +95,25 @@ $product_images = $stmt->fetchAll();
                     <?php if (!empty($product_images) || $product['main_image']): ?>
                     <div class="product-gallery-thumbnails">
                         <div class="d-flex gap-2 overflow-auto pb-2" style="scrollbar-width: thin;">
-                            <?php if ($product['main_image']): ?>
+                            <?php if ($main_img_url): ?>
                                 <div class="thumbnail-wrapper">
-                                    <img src="<?php echo BASE_URL; ?>/uploads/products/<?php echo htmlspecialchars($product['main_image']); ?>" 
+                                    <img src="<?php echo htmlspecialchars($main_img_url); ?>" 
                                          alt="Main" 
                                          class="thumbnail active rounded-3 cursor-pointer"
-                                         onclick="changeMainImage('<?php echo BASE_URL; ?>/uploads/products/<?php echo htmlspecialchars($product['main_image']); ?>', this)">
+                                         onclick="changeMainImage('<?php echo htmlspecialchars($main_img_url); ?>', this)">
                                 </div>
                             <?php endif; ?>
                             
                             <?php foreach ($product_images as $image): ?>
+                                <?php $gallery_url = product_image_url($image['image_path']); ?>
+                                <?php if ($gallery_url): ?>
                                 <div class="thumbnail-wrapper">
-                                    <img src="<?php echo BASE_URL; ?>/uploads/products/<?php echo htmlspecialchars($image['image_path']); ?>" 
+                                    <img src="<?php echo htmlspecialchars($gallery_url); ?>" 
                                          alt="Gallery image"
                                          class="thumbnail rounded-3 cursor-pointer"
-                                         onclick="changeMainImage('<?php echo BASE_URL; ?>/uploads/products/<?php echo htmlspecialchars($image['image_path']); ?>', this)">
+                                         onclick="changeMainImage('<?php echo htmlspecialchars($gallery_url); ?>', this)">
                                 </div>
+                                <?php endif; ?>
                             <?php endforeach; ?>
                         </div>
                     </div>

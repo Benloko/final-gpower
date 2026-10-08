@@ -37,48 +37,82 @@ body {
 
 /* Header */
 .header {
-    background-color: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 1px 0 rgba(0,0,0,0.05);
-    border-bottom: none;
-    transition: all 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.92) !important;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.brand-icon {
-    width: 36px;
-    height: 36px;
-    background: var(--primary-color);
-    color: white;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.1rem;
-    transform: rotate(-5deg);
-    transition: transform 0.3s ease;
+/* Top announcement bar links */
+.top-announcement-bar a.hover-white {
+    transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+.top-announcement-bar a.hover-white:hover {
+    color: #ffffff !important;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
 }
 
-.navbar-brand:hover .brand-icon {
-    transform: rotate(0deg) scale(1.05);
+.brand-logo-container {
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+}
+
+.navbar-brand:hover .brand-logo-container {
+    transform: scale(1.08) rotate(3deg);
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.25) !important;
+    border-color: rgba(37, 99, 235, 0.6) !important;
 }
 
 .brand-text {
     font-weight: 800;
-    font-size: 1.35rem;
+    font-size: 1.25rem;
     color: var(--dark-color);
     letter-spacing: -0.03em;
 }
 
-.nav-link {
-    color: #64748b !important;
+/* Animated Navigation Links */
+.header .nav-link {
+    color: #475569 !important;
     font-weight: 600;
-    font-size: 0.95rem;
-    padding: 0.5rem 1rem !important;
-    transition: color 0.2s ease;
+    font-size: 0.92rem;
+    padding: 0.4rem 0.85rem !important;
+    position: relative;
+    transition: color 0.25s ease, transform 0.15s ease;
 }
 
-.nav-link:hover {
-    color: var(--primary-color) !important;
+.header .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    width: 0;
+    height: 2.5px;
+    background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%);
+    border-radius: 99px;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, transform 0.3s ease;
+    transform: translateX(-50%);
+    opacity: 0;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+}
+
+.header .nav-link:hover {
+    color: #2563eb !important;
+}
+
+.header .nav-link:hover::after,
+.header .nav-link.active::after {
+    width: 70%;
+    opacity: 1;
+}
+
+.header .nav-link.active {
+    color: #2563eb !important;
+    font-weight: 700;
+}
+
+.header .nav-link:active {
+    transform: scale(0.95);
 }
 
 .btn-whatsapp-header {
@@ -585,31 +619,64 @@ body {
         color: white !important;
     }
 
-/* Desktop small whatsapp icon/button */
+/* Desktop small whatsapp icon/button with micro-animations */
 .btn-whatsapp-desktop {
-    min-width: 110px;
-    height: 40px;
-    padding: 0 14px;
+    min-width: 120px;
+    height: 38px;
+    padding: 0 16px !important;
     display: inline-flex !important;
     align-items: center;
     justify-content: center;
     border-radius: 999px !important;
-    box-shadow: 0 6px 14px rgba(37, 211, 102, 0.12);
+    background: linear-gradient(135deg, #25D366 0%, #128C7E 100%) !important;
+    border: none !important;
+    box-shadow: 0 4px 14px rgba(37, 211, 102, 0.28) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative;
+    overflow: hidden;
 }
-.btn-whatsapp-desktop i {
-    font-size: 1.25rem;
-    color: #ffffff;
+
+.btn-whatsapp-desktop::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+    transition: left 0.6s ease;
 }
+
+.btn-whatsapp-desktop:hover::before {
+    left: 100%;
+}
+
 .btn-whatsapp-desktop:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(37, 211, 102, 0.18);
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 8px 22px rgba(37, 211, 102, 0.45) !important;
+}
+
+.btn-whatsapp-desktop:active {
+    transform: translateY(0) scale(0.96);
+}
+
+.btn-whatsapp-desktop i {
+    font-size: 1.1rem;
+    color: #ffffff;
+    animation: pulseWhatsapp 2.5s infinite cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+@keyframes pulseWhatsapp {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
 }
 
 .btn-whatsapp-desktop .whatsapp-label {
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     color: #ffffff;
-    font-weight: 600;
+    font-weight: 700;
     line-height: 1;
+    letter-spacing: -0.2px;
 }
     
     .dropdown {
@@ -2014,3 +2081,172 @@ body {
         font-size: 1.75rem;
     }
 }
+
+/* ========================================
+   EXECUTIVE INDUSTRIAL REFINEMENTS
+   ======================================== */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #1e293b;
+    background-color: #f8fafc;
+}
+
+h1, h2, h3, h4, h5, h6, .brand-text {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.fw-extrabold {
+    font-weight: 800 !important;
+}
+
+.backdrop-blur {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.top-announcement-bar a.hover-white:hover {
+    color: #ffffff !important;
+}
+
+.hover-primary:hover {
+    color: #2563eb !important;
+}
+
+.hover-bright {
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+.hover-bright:hover {
+    background-color: rgba(255, 255, 255, 0.25) !important;
+    transform: translateY(-1px);
+}
+
+/* Executive Product Card Modern */
+.product-card-modern {
+    transition: all 0.35s cubic-bezier(0.165, 0.84, 0.44, 1) !important;
+    border: 1px solid #e2e8f0 !important;
+    cursor: pointer;
+}
+
+/* Equal Height & Single Line Alignment for All Cards */
+.product-card-modern .product-title {
+    font-size: 0.9rem !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    margin-bottom: 0.35rem !important;
+    height: 1.35rem !important;
+    line-height: 1.35rem !important;
+}
+
+.product-card-modern .product-status-line {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    font-size: 0.78rem !important;
+    height: 1.25rem !important;
+    line-height: 1.25rem !important;
+}
+
+.product-card-modern:hover {
+    transform: translateY(-8px) !important;
+    box-shadow: 0 20px 35px -10px rgba(15, 23, 42, 0.12) !important;
+    border-color: rgba(37, 99, 235, 0.3) !important;
+}
+
+.product-card-modern:hover .product-image-container img {
+    transform: scale(1.06) !important;
+}
+
+.product-card-modern .product-placeholder-box {
+    transition: transform 0.4s ease;
+}
+
+.product-card-modern:hover .product-placeholder-box {
+    transform: scale(1.03);
+}
+
+/* Hero Search Form glowing border */
+.hero-search-form .input-group:focus-within {
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.25), 0 20px 30px -10px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Compact Hero Search Form */
+.hero-search-compact .input-group {
+    transition: all 0.25s ease;
+}
+
+.hero-search-compact .input-group:focus-within {
+    border-color: rgba(37, 99, 235, 0.6) !important;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25) !important;
+}
+
+.placeholder-white-50::placeholder {
+    color: rgba(255, 255, 255, 0.5) !important;
+    font-size: 0.9rem;
+}
+
+.whatsapp-float:hover {
+    transform: scale(1.1) rotate(5deg) !important;
+}
+
+/* Vertical Spacing & Grid Utilities */
+.gy-4\.5 {
+    --bs-gutter-y: 1.85rem !important;
+}
+
+.gx-3\.5 {
+    --bs-gutter-x: 1.25rem !important;
+}
+
+#products-grid > .col {
+    margin-bottom: 0.25rem;
+}
+
+/* Executive Statistics Banner */
+@media (min-width: 992px) {
+    .border-end-lg {
+        border-right: 1px solid #e2e8f0 !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-search-compact .input-group {
+        flex-direction: column !important;
+        border-radius: 12px !important;
+        padding: 8px !important;
+    }
+    
+    .hero-search-compact .btn-primary {
+        width: 100% !important;
+        margin-top: 6px !important;
+    }
+}
+
+/* Animated Pulsing WhatsApp Button on Product Cards */
+.product-whatsapp-pulse {
+    transition: transform 0.25s ease, box-shadow 0.25s ease !important;
+    animation: waPulse 2s infinite !important;
+}
+
+.product-whatsapp-pulse:hover {
+    transform: scale(1.18) rotate(6deg) !important;
+    box-shadow: 0 6px 18px rgba(37, 211, 102, 0.6) !important;
+}
+
+@keyframes waPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 0 0 8px rgba(37, 211, 102, 0);
+        transform: scale(1.06);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+        transform: scale(1);
+    }
+}
+
+
