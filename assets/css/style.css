@@ -2251,8 +2251,10 @@ h1, h2, h3, h4, h5, h6, .brand-text {
 
 /* Fullscreen Immersive Hero Section */
 .hero-fullscreen {
-    min-height: calc(100vh - 95px);
-    min-height: calc(100dvh - 95px);
+    height: calc(100vh - 100px);
+    height: calc(100dvh - 100px);
+    min-height: calc(100vh - 100px);
+    min-height: calc(100dvh - 100px);
     display: flex !important;
     flex-direction: column !important;
     justify-content: center !important;

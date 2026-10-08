@@ -19,7 +19,7 @@ $slider_products = array_slice($slider_products, 0, 8);
 
 <!-- Clean Executive Hero Banner (Full Screen Viewport) -->
 <section class="hero-section hero-fullscreen text-white position-relative overflow-hidden" 
-         style="background: linear-gradient(180deg, rgba(5, 12, 26, 0.36) 0%, rgba(7, 18, 38, 0.54) 100%), url('<?php echo BASE_URL; ?>/assets/images/hero-bg.jpeg') center/cover no-repeat;">
+         style="background: linear-gradient(180deg, rgba(5, 12, 26, 0.35) 0%, rgba(7, 18, 38, 0.55) 100%), url('<?php echo BASE_URL; ?>/assets/images/hero-bg.jpeg?v=<?php echo filemtime(__DIR__ . '/assets/images/hero-bg.jpeg'); ?>') center/cover no-repeat;">
     
     <div class="container py-4 position-relative text-center my-auto" style="z-index: 2;">
         <div class="row justify-content-center">
