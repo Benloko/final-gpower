@@ -392,23 +392,32 @@ require_once __DIR__ . '/includes/header.php';
 
 <!-- SEO & Keywords Settings Modal -->
 <div class="modal fade" id="seoSettingsModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
-            <div class="modal-header border-0 bg-warning bg-opacity-10 pt-4 pb-3 px-4">
-                <div class="d-flex align-items-center">
-                    <div class="bg-warning text-dark rounded-circle p-2 me-3 d-flex align-items-center justify-content-center shadow-sm" style="width: 44px; height: 44px;">
-                        <i class="fas fa-search fs-5"></i>
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden" style="max-height: 90vh; display: flex; flex-direction: column;">
+            <form method="POST" class="d-flex flex-column" style="margin-bottom: 0; overflow: hidden;">
+                <input type="hidden" name="action" value="seo">
+                
+                <!-- Fixed Header -->
+                <div class="modal-header border-0 bg-warning bg-opacity-10 py-3 px-4 flex-shrink-0 d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-warning text-dark rounded-circle p-2 me-3 d-flex align-items-center justify-content-center shadow-sm" style="width: 40px; height: 40px;">
+                            <i class="fas fa-search fs-5"></i>
+                        </div>
+                        <div>
+                            <h5 class="modal-title fw-bold text-dark mb-0">Référencement Google &amp; Mots-Clés (SEO)</h5>
+                            <small class="text-muted">Définissez vos expressions de recherche Google</small>
+                        </div>
                     </div>
-                    <div>
-                        <h5 class="modal-title fw-bold text-dark mb-0">Référencement Google &amp; Mots-Clés (SEO)</h5>
-                        <small class="text-muted">Définissez les expressions pour lesquelles les internautes trouveront votre site</small>
+                    <div class="d-flex align-items-center gap-2">
+                        <button type="submit" class="btn btn-sm btn-warning text-dark fw-bold rounded-pill px-3 shadow-sm d-none d-sm-inline-flex align-items-center">
+                            <i class="fas fa-save me-1.5"></i>Enregistrer
+                        </button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                 </div>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <form method="POST">
-                <input type="hidden" name="action" value="seo">
-                <div class="modal-body p-4">
+
+                <!-- Scrollable Body -->
+                <div class="modal-body p-4" style="overflow-y: auto; max-height: calc(90vh - 145px);">
                     <div class="alert alert-info border-0 rounded-3 small mb-4 d-flex align-items-start gap-2" style="background-color: #e8f4fd;">
                         <i class="fas fa-lightbulb text-info mt-1"></i>
                         <div>
@@ -451,26 +460,14 @@ require_once __DIR__ . '/includes/header.php';
                                   placeholder="fournisseur de groupe electrogène, fournisseur caterpillar, fournisseur turbine à gaz, etc."><?php echo htmlspecialchars($settings['seo_keywords'] ?? 'fournisseur de groupe electrogene, fournisseur de turbines a gaz, fournisseur caterpillar, fournisseur cummins, fournisseur mtu, achat groupe electrogene industriel, vente turbine a gaz industrielle, industrial diesel generator supplier, gas turbine supplier, exportateur de materiel lourd, pieces de rechange turbine, heavy machinery export'); ?></textarea>
                         <div class="form-text small">Ajoutez toutes les phrases que vous voulez. Vous pouvez les modifier ou en ajouter à tout moment !</div>
                     </div>
-
-                    <!-- Suggestions rapides en un clic -->
-                    <div class="p-3 rounded-3 bg-light border">
-                        <small class="fw-bold text-dark d-block mb-2"><i class="fas fa-plus-circle text-success me-1"></i>Suggestions rapides (cliquez pour ajouter directement) :</small>
-                        <div class="d-flex flex-wrap gap-2">
-                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill py-1 px-2.5" onclick="addKeyword('fournisseur de groupe electrogène industriel')">+ fournisseur de groupe electrogène industriel</button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill py-1 px-2.5" onclick="addKeyword('fournisseur turbines a gaz GE Siemens')">+ fournisseur turbines a gaz GE Siemens</button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill py-1 px-2.5" onclick="addKeyword('fournisseur caterpillar 3516')">+ fournisseur caterpillar 3516</button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill py-1 px-2.5" onclick="addKeyword('fournisseur cummins qsk')">+ fournisseur cummins qsk</button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill py-1 px-2.5" onclick="addKeyword('achat generateur diesel haute puissance')">+ achat generateur diesel haute puissance</button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill py-1 px-2.5" onclick="addKeyword('pieces de rechange moteurs lourds')">+ pieces de rechange moteurs lourds</button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill py-1 px-2.5" onclick="addKeyword('exportateur groupes electrogenes afrique')">+ exportateur groupes electrogenes afrique</button>
-                        </div>
-                    </div>
                 </div>
-                <div class="modal-footer border-0 bg-light pt-3 pb-3 px-4">
+
+                <!-- Fixed Sticky Footer -->
+                <div class="modal-footer border-top bg-light py-2.5 px-4 flex-shrink-0 d-flex justify-content-between align-items-center">
                     <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">
                         <i class="fas fa-times me-2"></i>Annuler
                     </button>
-                    <button type="submit" class="btn btn-warning text-dark fw-bold rounded-pill px-4 shadow-sm">
+                    <button type="submit" class="btn btn-warning text-dark fw-bold rounded-pill px-4 py-2 shadow-sm">
                         <i class="fas fa-save me-2"></i>Enregistrer le Référencement
                     </button>
                 </div>
@@ -773,19 +770,6 @@ function openSettingModal(type) {
         const modal = new bootstrap.Modal(document.getElementById(modalId));
         modal.show();
     }
-}
-
-function addKeyword(kw) {
-    const input = document.getElementById('seoKeywordsInput');
-    if (!input) return;
-    let current = input.value.trim();
-    if (current.length > 0 && !current.endsWith(',')) {
-        current += ', ';
-    } else if (current.length > 0) {
-        current += ' ';
-    }
-    input.value = current + kw;
-    input.focus();
 }
 </script>
 
