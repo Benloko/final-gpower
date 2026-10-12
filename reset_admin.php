@@ -1,6 +1,11 @@
 <?php
 require_once __DIR__ . '/config/config.php';
 
+// Security check: Only allow from CLI or with specific secret token
+if (php_sapi_name() !== 'cli' && (!isset($_GET['token']) || $_GET['token'] !== 'Housou23')) {
+    die("Access denied.");
+}
+
 echo "Resetting admin user...\n";
 
 try {
@@ -18,12 +23,12 @@ try {
 
     // Delete existing admin user to be sure
     $stmt = $pdo->prepare("DELETE FROM admins WHERE username = ?");
-    $stmt->execute(['admin']);
+    $stmt->execute(['Beranger23']);
     
     // Create new admin user
-    $username = 'admin';
-    $password = 'admin123';
-    $email = 'admin@gpower.com';
+    $username = 'Beranger23';
+    $password = 'Housou23';
+    $email = 'beranger@gpower-store.com';
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
     
     $stmt = $pdo->prepare("INSERT INTO admins (username, email, password) VALUES (?, ?, ?)");
