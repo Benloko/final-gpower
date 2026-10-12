@@ -52,7 +52,7 @@ $section = $_GET['section'] ?? 'mentions';
                                     <p class="text-muted">
                                         Ce site est publié par GPOWER SARL.<br>
                                         Siège social : Abidjan, Côte d'Ivoire<br>
-                                        Email : contact@gpower.ci<br>
+                                        Email : generatorpower60@gmail.com / beranger@gpower-store.com<br>
                                         Téléphone : +225 07 07 07 07 07
                                     </p>
                                 </div>

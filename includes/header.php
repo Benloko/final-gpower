@@ -40,10 +40,12 @@ if (isset($_COOKIE['visitor_email'])) {
     <meta name="google-site-verification" content="MlmZDajPpfi6R98SmUsi_K3Ixj-JMgl2wiVhjIXW1_o" />
     <title><?php echo isset($page_title) ? $page_title . ' - ' : ''; ?><?php echo t('site_name'); ?></title>
     
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="<?php echo BASE_URL; ?>/assets/images/favicon.ico?v=<?php echo filemtime(__DIR__ . '/../assets/images/favicon.ico'); ?>">
-    <link rel="icon" type="image/png" sizes="32x32" href="<?php echo BASE_URL; ?>/assets/images/favicon-32x32.png?v=<?php echo filemtime(__DIR__ . '/../assets/images/favicon-32x32.png'); ?>">
-    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo BASE_URL; ?>/assets/images/apple-touch-icon.png?v=<?php echo filemtime(__DIR__ . '/../assets/images/apple-touch-icon.png'); ?>">
+    <!-- Favicon (Optimized for Google Search & Browsers) -->
+    <link rel="icon" type="image/x-icon" href="<?php echo BASE_URL; ?>/favicon.ico">
+    <link rel="icon" type="image/png" sizes="48x48" href="<?php echo BASE_URL; ?>/assets/images/favicon-48x48.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="<?php echo BASE_URL; ?>/assets/images/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="<?php echo BASE_URL; ?>/assets/images/favicon-192x192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo BASE_URL; ?>/assets/images/apple-touch-icon.png">
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -69,12 +71,12 @@ if (isset($_COOKIE['visitor_email'])) {
                 <span><i class="fas fa-globe me-1 text-info"></i> Worldwide Freight & Logistics</span>
             </div>
             <div class="d-flex align-items-center gap-3">
-                <a href="tel:<?php echo $settings['contact_phone'] ?? ''; ?>" class="text-white-50 text-decoration-none hover-white">
-                    <i class="fas fa-phone-alt me-1 text-primary"></i> <?php echo htmlspecialchars($settings['contact_phone'] ?? '+1 800 GPOWER'); ?>
+                <a href="mailto:generatorpower60@gmail.com" class="text-white-50 text-decoration-none hover-white">
+                    <i class="fas fa-envelope me-1 text-primary"></i> generatorpower60@gmail.com
                 </a>
                 <span class="text-secondary">•</span>
-                <a href="mailto:<?php echo $settings['contact_email'] ?? ''; ?>" class="text-white-50 text-decoration-none hover-white">
-                    <i class="fas fa-envelope me-1 text-primary"></i> <?php echo htmlspecialchars($settings['contact_email'] ?? 'contact@gpower.com'); ?>
+                <a href="mailto:beranger@gpower-store.com" class="text-white-50 text-decoration-none hover-white">
+                    <i class="fas fa-envelope me-1 text-primary"></i> beranger@gpower-store.com
                 </a>
             </div>
         </div>

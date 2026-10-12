@@ -56,7 +56,7 @@ $section = $_GET['section'] ?? 'mentions';
                                     <p class="text-muted">
                                         This website is published by GPOWER SARL.<br>
                                         Registered office: Abidjan, Ivory Coast<br>
-                                        Email: contact@gpower.ci<br>
+                                        Email: generatorpower60@gmail.com / beranger@gpower-store.com<br>
                                         Phone: +225 07 07 07 07 07
                                     </p>
                                 </div>

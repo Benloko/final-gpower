@@ -603,18 +603,28 @@ textarea.form-control-modern {
                     <h3>Business Email</h3>
                     <p>Send us an email for inquiries, quotes, or technical questions.</p>
                     
-                    <div class="contact-info-box">
+                    <div class="contact-info-box d-flex flex-column gap-2">
                         <div class="small text-muted mb-1">Write to us at</div>
-                        <a href="mailto:<?php echo $settings['site_email'] ?? 'contact@gpower.com'; ?>" 
-                           class="email-link">
-                            <?php echo $settings['site_email'] ?? 'contact@gpower.com'; ?>
-                        </a>
+                        <div>
+                            <a href="mailto:generatorpower60@gmail.com" class="email-link fw-semibold">
+                                generatorpower60@gmail.com
+                            </a>
+                        </div>
+                        <div>
+                            <a href="mailto:beranger@gpower-store.com" class="email-link fw-semibold">
+                                beranger@gpower-store.com
+                            </a>
+                        </div>
                     </div>
                     
-                                <a href="mailto:<?php echo $settings['site_email'] ?? 'contact@gpower.com'; ?>" 
-                                    class="contact-btn btn-email">
-                                <i class="fas fa-envelope me-2"></i>Send an Email
-                    </a>
+                    <div class="d-flex flex-column flex-sm-row gap-2 justify-content-center mt-3">
+                        <a href="mailto:generatorpower60@gmail.com" class="contact-btn btn-email flex-fill">
+                            <i class="fas fa-envelope me-2"></i>Email (Primary)
+                        </a>
+                        <a href="mailto:beranger@gpower-store.com" class="contact-btn btn-email flex-fill">
+                            <i class="fas fa-envelope-open me-2"></i>Email (Executive)
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

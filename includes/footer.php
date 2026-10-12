@@ -50,8 +50,13 @@
                             </button>
                         </div>
                     </form>
-                    <div class="text-white-50 small" style="font-size: 0.78rem;">
-                        <i class="fas fa-envelope text-primary me-1.5"></i> <?php echo htmlspecialchars($settings['site_email'] ?? 'contact@gpower.com'); ?>
+                    <div class="text-white-50 small d-flex flex-column gap-1" style="font-size: 0.8rem;">
+                        <a href="mailto:generatorpower60@gmail.com" class="text-white-50 text-decoration-none hover-white d-inline-flex align-items-center">
+                            <i class="fas fa-envelope text-primary me-2"></i> generatorpower60@gmail.com
+                        </a>
+                        <a href="mailto:beranger@gpower-store.com" class="text-white-50 text-decoration-none hover-white d-inline-flex align-items-center">
+                            <i class="fas fa-envelope text-primary me-2"></i> beranger@gpower-store.com
+                        </a>
                     </div>
                 </div>
             </div>

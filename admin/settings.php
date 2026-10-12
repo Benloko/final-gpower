@@ -25,6 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!$settingsTableMissing && isset($_POST['action']) && $_POST['action'] == 'general') {
         $site_name = sanitize($_POST['site_name']);
         $site_email = sanitize($_POST['site_email']);
+        $site_email_secondary = sanitize($_POST['site_email_secondary'] ?? '');
         $site_phone = sanitize($_POST['site_phone']);
         
         if (empty($site_name) || empty($site_email)) {
@@ -33,12 +34,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $settings_to_update = [
                 'site_name' => $site_name,
                 'site_email' => $site_email,
+                'site_email_secondary' => $site_email_secondary,
                 'site_phone' => $site_phone
             ];
             
             foreach ($settings_to_update as $key => $value) {
-                $stmt = $pdo->prepare("UPDATE settings SET setting_value = ? WHERE setting_key = ?");
-                $stmt->execute([$value, $key]);
+                // Ensure key exists or update
+                $stmt = $pdo->prepare("INSERT INTO settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = ?");
+                $stmt->execute([$key, $value, $value]);
             }
             
             $success = 'General settings updated successfully!';
@@ -307,10 +310,22 @@ require_once __DIR__ . '/includes/header.php';
                         <input type="email" 
                                name="site_email" 
                                class="form-control form-control-lg border-1 rounded-3" 
-                               value="<?php echo htmlspecialchars($settings['site_email'] ?? ''); ?>"
-                               placeholder="contact@gpower.ci"
+                               value="<?php echo htmlspecialchars($settings['site_email'] ?? 'generatorpower60@gmail.com'); ?>"
+                               placeholder="generatorpower60@gmail.com"
                                required>
                         <div class="form-text small">Primary contact email</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold small mb-2">
+                            <i class="fas fa-envelope-open text-primary me-1"></i>Secondary Email
+                        </label>
+                        <input type="email" 
+                               name="site_email_secondary" 
+                               class="form-control form-control-lg border-1 rounded-3" 
+                               value="<?php echo htmlspecialchars($settings['site_email_secondary'] ?? 'beranger@gpower-store.com'); ?>"
+                               placeholder="beranger@gpower-store.com">
+                        <div class="form-text small">Secondary contact email (optional)</div>
                     </div>
                     
                     <div class="mb-0">

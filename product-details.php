@@ -195,7 +195,7 @@ $related_products = $related_stmt->fetchAll();
                         </div>
                         
                         <div class="col-6">
-                            <a href="mailto:<?php echo $settings['site_email'] ?? 'contact@gpower.ci'; ?>?subject=<?php echo urlencode('Inquiry: ' . $product['name']); ?>&body=<?php echo urlencode('Hello, I would like more information about ' . $product['name'] . ' priced at ' . format_price($product['price']) . '.'); ?>" 
+                            <a href="mailto:generatorpower60@gmail.com?cc=beranger@gpower-store.com&subject=<?php echo urlencode('Inquiry: ' . $product['name']); ?>&body=<?php echo urlencode('Hello, I would like more information about ' . $product['name'] . ' priced at ' . format_price($product['price']) . '.'); ?>" 
                                class="btn btn-dark w-100 rounded-3 d-flex align-items-center justify-content-center gap-2 shadow-sm"
                                style="padding: 0.6rem 1rem; font-size: 0.9rem; height: 42px;">
                                 <i class="fas fa-envelope"></i>
