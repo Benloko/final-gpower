@@ -30,7 +30,9 @@ if (!$product) {
     exit;
 }
 
-$page_title = $product['name'] . ' - Details';
+$page_title = $product['name'] . ' | Fournisseur ' . $product['name'];
+$page_description = "Fournisseur de " . $product['name'] . ". Spécifications techniques complètes, rapport d'inspection certifié et expédition internationale par GPOWER STORE.";
+$page_keywords = "fournisseur " . $product['name'] . ", achat " . $product['name'] . ", vente " . $product['name'] . ", " . $product['name'] . " prix, " . $product['name'] . " specs";
 require_once __DIR__ . '/includes/header.php';
 
 // No server-side product translations used — product content is authored in English only.

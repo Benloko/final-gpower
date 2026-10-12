@@ -38,7 +38,74 @@ if (isset($_COOKIE['visitor_email'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-site-verification" content="MlmZDajPpfi6R98SmUsi_K3Ixj-JMgl2wiVhjIXW1_o" />
-    <title><?php echo isset($page_title) ? $page_title . ' - ' : ''; ?><?php echo t('site_name'); ?></title>
+<?php
+// SEO Meta Configuration
+$siteName = $settings['site_name'] ?? 'GPOWER STORE';
+if (isset($page_title) && !empty($page_title)) {
+    $metaTitle = htmlspecialchars($page_title . ' | ' . $siteName);
+} else {
+    $metaTitle = htmlspecialchars($settings['seo_title'] ?? ($siteName . ' | Fournisseur de Groupes Électrogènes, Turbines & Moteurs'));
+}
+
+$metaDescription = htmlspecialchars($page_description ?? ($settings['seo_description'] ?? 'Fournisseur international et exportateur d\'équipements industriels : groupes électrogènes diesel & gaz (Caterpillar, Cummins, MTU, MWM), turbines à gaz et pièces détachées.'));
+
+$metaKeywords = htmlspecialchars($settings['seo_keywords'] ?? 'fournisseur de groupe electrogene, fournisseur de turbines a gaz, fournisseur caterpillar, fournisseur cummins, diesel generator supplier');
+if (isset($page_keywords) && !empty($page_keywords)) {
+    $metaKeywords = htmlspecialchars($page_keywords . ', ' . $metaKeywords);
+}
+
+$currentFullUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . ($_SERVER['HTTP_HOST'] ?? 'localhost') . ($_SERVER['REQUEST_URI'] ?? '/');
+?>
+    <title><?php echo $metaTitle; ?></title>
+    <meta name="description" content="<?php echo $metaDescription; ?>">
+    <meta name="keywords" content="<?php echo $metaKeywords; ?>">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="<?php echo htmlspecialchars($currentFullUrl); ?>">
+
+    <!-- Open Graph / Facebook / WhatsApp / LinkedIn -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="<?php echo $metaTitle; ?>">
+    <meta property="og:description" content="<?php echo $metaDescription; ?>">
+    <meta property="og:url" content="<?php echo htmlspecialchars($currentFullUrl); ?>">
+    <meta property="og:image" content="<?php echo BASE_URL; ?>/assets/images/logo.jpeg">
+    <meta property="og:site_name" content="<?php echo htmlspecialchars($siteName); ?>">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<?php echo $metaTitle; ?>">
+    <meta name="twitter:description" content="<?php echo $metaDescription; ?>">
+    <meta name="twitter:image" content="<?php echo BASE_URL; ?>/assets/images/logo.jpeg">
+
+    <!-- Schema.org JSON-LD Structured Data for Google Rich Results -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "<?php echo htmlspecialchars($siteName); ?>",
+      "alternateName": ["GPOWER", "Gpower Industrial Power Equipment"],
+      "url": "<?php echo BASE_URL; ?>",
+      "logo": "<?php echo BASE_URL; ?>/assets/images/logo.jpeg",
+      "description": "<?php echo addslashes($settings['seo_description'] ?? ''); ?>",
+      "email": "generatorpower60@gmail.com",
+      "telephone": "+2290140870199",
+      "sameAs": [
+        "https://www.facebook.com/profile.php?id=61579119517182",
+        "https://www.tiktok.com/@generator_power23"
+      ],
+      "knowsAbout": [
+        "Industrial Diesel Generator Sets",
+        "Industrial Gas Turbines",
+        "Heavy Duty Engines",
+        "Power Equipment Sourcing",
+        "Caterpillar Machinery",
+        "Cummins Power Equipment",
+        "MTU Friedrichshafen",
+        "Siemens Energy Gas Turbines",
+        "General Electric Turbines",
+        "Spare Parts and Components"
+      ]
+    }
+    </script>
     
     <!-- Favicon (Optimized for Google Search & Browsers) -->
     <link rel="icon" type="image/x-icon" href="<?php echo BASE_URL; ?>/favicon.ico">

@@ -5,3 +5,5 @@ Allow: /assets/images/
 
 User-agent: Google-Favicon
 Allow: /
+
+Sitemap: https://gpower-store.com/sitemap.xml

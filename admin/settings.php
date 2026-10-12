@@ -57,6 +57,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         $success = 'WhatsApp number updated successfully!';
     }
+
+    // Handle SEO & Keywords Settings
+    if (!$settingsTableMissing && isset($_POST['action']) && $_POST['action'] == 'seo') {
+        $seo_title = sanitize($_POST['seo_title'] ?? '');
+        $seo_description = sanitize($_POST['seo_description'] ?? '');
+        $seo_keywords = sanitize($_POST['seo_keywords'] ?? '');
+
+        $seo_items = [
+            'seo_title' => $seo_title,
+            'seo_description' => $seo_description,
+            'seo_keywords' => $seo_keywords
+        ];
+
+        foreach ($seo_items as $key => $val) {
+            $stmt = $pdo->prepare("INSERT INTO settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = ?");
+            $stmt->execute([$key, $val, $val]);
+        }
+
+        $success = 'Mots-clés et référencement Google mis à jour avec succès !';
+    }
     
     // Handle Password Change
     if (isset($_POST['action']) && $_POST['action'] == 'password') {
@@ -193,6 +213,22 @@ require_once __DIR__ . '/includes/header.php';
                 </div>
                 <h6 class="fw-bold mb-2">General Settings</h6>
                 <p class="text-muted small mb-0">Site name, email, phone</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SEO & Keywords Settings Card -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card border-0 shadow-sm rounded-3 h-100 setting-card" style="cursor: pointer; transition: transform 0.2s;" onclick="openSettingModal('seo')">
+            <div class="card-body p-3">
+                <div class="d-flex align-items-start justify-content-between mb-3">
+                    <div class="bg-warning bg-opacity-10 rounded-3 p-2">
+                        <i class="fas fa-search text-warning" style="font-size: 1.5rem;"></i>
+                    </div>
+                    <i class="fas fa-chevron-right text-muted" style="font-size: 0.8rem;"></i>
+                </div>
+                <h6 class="fw-bold mb-2">SEO &amp; Mots-Clés Google</h6>
+                <p class="text-muted small mb-0">Mots-clés, titre et expressions de recherche Google</p>
             </div>
         </div>
     </div>
@@ -347,6 +383,95 @@ require_once __DIR__ . '/includes/header.php';
                     </button>
                     <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm">
                         <i class="fas fa-save me-2"></i>Enregistrer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- SEO & Keywords Settings Modal -->
+<div class="modal fade" id="seoSettingsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="modal-header border-0 bg-warning bg-opacity-10 pt-4 pb-3 px-4">
+                <div class="d-flex align-items-center">
+                    <div class="bg-warning text-dark rounded-circle p-2 me-3 d-flex align-items-center justify-content-center shadow-sm" style="width: 44px; height: 44px;">
+                        <i class="fas fa-search fs-5"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold text-dark mb-0">Référencement Google &amp; Mots-Clés (SEO)</h5>
+                        <small class="text-muted">Définissez les expressions pour lesquelles les internautes trouveront votre site</small>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST">
+                <input type="hidden" name="action" value="seo">
+                <div class="modal-body p-4">
+                    <div class="alert alert-info border-0 rounded-3 small mb-4 d-flex align-items-start gap-2" style="background-color: #e8f4fd;">
+                        <i class="fas fa-lightbulb text-info mt-1"></i>
+                        <div>
+                            <strong>Astuce Visibilité :</strong> Quand les acheteurs recherchent des termes comme <em>"fournisseur de..."</em>, Google analyse le titre, la description et les mots-clés ci-dessous pour recommander votre site. Séparez simplement chaque terme par une virgule.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold small mb-1">
+                            <i class="fas fa-heading text-warning me-1"></i>Titre Google (Meta Title)
+                        </label>
+                        <input type="text" 
+                               name="seo_title" 
+                               class="form-control form-control-lg border-1 rounded-3" 
+                               value="<?php echo htmlspecialchars($settings['seo_title'] ?? 'GPOWER STORE | Fournisseur de Groupes Électrogènes, Turbines à Gaz & Moteurs'); ?>"
+                               placeholder="Ex: GPOWER STORE | Fournisseur de Groupes Électrogènes & Turbines"
+                               required>
+                        <div class="form-text small">Titre principal affiché dans les résultats Google (50 à 70 caractères).</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold small mb-1">
+                            <i class="fas fa-align-left text-warning me-1"></i>Description Google (Meta Description)
+                        </label>
+                        <textarea name="seo_description" 
+                                  rows="3" 
+                                  class="form-control border-1 rounded-3" 
+                                  placeholder="Description courte sous le lien dans Google"><?php echo htmlspecialchars($settings['seo_description'] ?? 'Fournisseur international et exportateur d\'équipements industriels : groupes électrogènes diesel & gaz (Caterpillar, Cummins, MTU, MWM), turbines à gaz et pièces détachées.'); ?></textarea>
+                        <div class="form-text small">La description affichée sous votre lien dans les résultats de recherche (130 à 160 caractères).</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold small mb-1">
+                            <i class="fas fa-tags text-warning me-1"></i>Mots-clés &amp; Expressions recherchées (Séparés par des virgules)
+                        </label>
+                        <textarea name="seo_keywords" 
+                                  id="seoKeywordsInput"
+                                  rows="5" 
+                                  class="form-control border-1 rounded-3 font-monospace small" 
+                                  placeholder="fournisseur de groupe electrogène, fournisseur caterpillar, fournisseur turbine à gaz, etc."><?php echo htmlspecialchars($settings['seo_keywords'] ?? 'fournisseur de groupe electrogene, fournisseur de turbines a gaz, fournisseur caterpillar, fournisseur cummins, fournisseur mtu, achat groupe electrogene industriel, vente turbine a gaz industrielle, industrial diesel generator supplier, gas turbine supplier, exportateur de materiel lourd, pieces de rechange turbine, heavy machinery export'); ?></textarea>
+                        <div class="form-text small">Ajoutez toutes les phrases que vous voulez. Vous pouvez les modifier ou en ajouter à tout moment !</div>
+                    </div>
+
+                    <!-- Suggestions rapides en un clic -->
+                    <div class="p-3 rounded-3 bg-light border">
+                        <small class="fw-bold text-dark d-block mb-2"><i class="fas fa-plus-circle text-success me-1"></i>Suggestions rapides (cliquez pour ajouter directement) :</small>
+                        <div class="d-flex flex-wrap gap-2">
+                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill py-1 px-2.5" onclick="addKeyword('fournisseur de groupe electrogène industriel')">+ fournisseur de groupe electrogène industriel</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill py-1 px-2.5" onclick="addKeyword('fournisseur turbines a gaz GE Siemens')">+ fournisseur turbines a gaz GE Siemens</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill py-1 px-2.5" onclick="addKeyword('fournisseur caterpillar 3516')">+ fournisseur caterpillar 3516</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill py-1 px-2.5" onclick="addKeyword('fournisseur cummins qsk')">+ fournisseur cummins qsk</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill py-1 px-2.5" onclick="addKeyword('achat generateur diesel haute puissance')">+ achat generateur diesel haute puissance</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill py-1 px-2.5" onclick="addKeyword('pieces de rechange moteurs lourds')">+ pieces de rechange moteurs lourds</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill py-1 px-2.5" onclick="addKeyword('exportateur groupes electrogenes afrique')">+ exportateur groupes electrogenes afrique</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 bg-light pt-3 pb-3 px-4">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Annuler
+                    </button>
+                    <button type="submit" class="btn btn-warning text-dark fw-bold rounded-pill px-4 shadow-sm">
+                        <i class="fas fa-save me-2"></i>Enregistrer le Référencement
                     </button>
                 </div>
             </form>
@@ -630,6 +755,9 @@ function openSettingModal(type) {
         case 'general':
             modalId = 'generalSettingsModal';
             break;
+        case 'seo':
+            modalId = 'seoSettingsModal';
+            break;
         case 'contact':
             modalId = 'contactSettingsModal';
             break;
@@ -645,6 +773,19 @@ function openSettingModal(type) {
         const modal = new bootstrap.Modal(document.getElementById(modalId));
         modal.show();
     }
+}
+
+function addKeyword(kw) {
+    const input = document.getElementById('seoKeywordsInput');
+    if (!input) return;
+    let current = input.value.trim();
+    if (current.length > 0 && !current.endsWith(',')) {
+        current += ', ';
+    } else if (current.length > 0) {
+        current += ' ';
+    }
+    input.value = current + kw;
+    input.focus();
 }
 </script>
 
