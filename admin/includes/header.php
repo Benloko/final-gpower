@@ -11,8 +11,13 @@ $pdo = getPDOConnection();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo isset($page_title) ? $page_title . ' - ' : ''; ?>Gpower Admin</title>
+    <title><?php echo isset($page_title) ? $page_title . ' - ' : ''; ?>GPOWER STORE Admin</title>
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="<?php echo BASE_URL; ?>/assets/images/favicon.ico?v=<?php echo filemtime(__DIR__ . '/../../assets/images/favicon.ico'); ?>">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?php echo BASE_URL; ?>/assets/images/favicon-32x32.png?v=<?php echo filemtime(__DIR__ . '/../../assets/images/favicon-32x32.png'); ?>">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo BASE_URL; ?>/assets/images/apple-touch-icon.png?v=<?php echo filemtime(__DIR__ . '/../../assets/images/apple-touch-icon.png'); ?>">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/style.css">
@@ -23,9 +28,9 @@ $pdo = getPDOConnection();
     <nav class="navbar navbar-expand-md bg-white shadow-sm border-bottom sticky-top">
         <div class="container-fluid px-4">
             <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="<?php echo ADMIN_URL; ?>/" style="color: #1a1a1a;">
-                <img src="<?php echo BASE_URL; ?>/assets/images/logo.jpeg" alt="Gpower" class="rounded-circle shadow-sm" style="width: 40px; height: 40px; object-fit: cover;">
+                <img src="<?php echo BASE_URL; ?>/assets/images/logo.jpeg?v=<?php echo filemtime(__DIR__ . '/../../assets/images/logo.jpeg'); ?>" alt="GPOWER STORE" class="rounded-circle shadow-sm" style="width: 40px; height: 40px; object-fit: cover;">
                 <div class="d-flex flex-column">
-                    <span style="font-size: 1.1rem; line-height: 1;">Gpower</span>
+                    <span style="font-size: 1.1rem; line-height: 1;">GPOWER STORE</span>
                     <small class="text-muted" style="font-size: 0.7rem; font-weight: 400;">Admin Dashboard</small>
                 </div>
             </a>
@@ -70,9 +75,9 @@ $pdo = getPDOConnection();
     <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileMenu" style="max-width: 280px;">
         <div class="offcanvas-header border-bottom">
             <div class="d-flex align-items-center gap-2">
-                <img src="<?php echo BASE_URL; ?>/assets/images/logo.jpeg" alt="Gpower" class="rounded-circle" style="width: 36px; height: 36px; object-fit: cover;">
+                <img src="<?php echo BASE_URL; ?>/assets/images/logo.jpeg?v=<?php echo filemtime(__DIR__ . '/../../assets/images/logo.jpeg'); ?>" alt="GPOWER STORE" class="rounded-circle" style="width: 36px; height: 36px; object-fit: cover;">
                 <div>
-                    <h6 class="mb-0 fw-bold">Gpower</h6>
+                    <h6 class="mb-0 fw-bold">GPOWER STORE</h6>
                     <small class="text-muted">Admin Dashboard</small>
                 </div>
             </div>

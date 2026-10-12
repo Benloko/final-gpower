@@ -96,18 +96,68 @@ $slider_products = array_slice($slider_products, 0, 8);
 <!-- Simple, Elegant Presentation Section (Sans "ABOUT GPOWER", titre court, bouton À propos, radius diminué) -->
 <section id="about" class="py-5 bg-white">
     <div class="container py-4">
-        <div class="row align-items-center justify-content-between g-5">
+        <div class="row align-items-start justify-content-between g-5">
             <!-- Left: Presentation -->
-            <div class="col-lg-7">
+            <div class="col-lg-7 col-xl-8">
                 <h2 class="fw-extrabold text-dark mb-3" style="font-family: 'Plus Jakarta Sans', sans-serif; letter-spacing: -0.5px; font-size: 2.1rem; line-height: 1.25;">
                     Heavy Power Solutions
                 </h2>
+                
                 <p class="text-muted lead mb-3" style="font-size: 1.05rem; line-height: 1.7;">
-                    Gpower specializes in the supply, technical inspection, and worldwide export of high-power diesel generators, industrial gas turbines, and heavy engines.
+                    <strong>GPOWER STORE</strong> specializes in the international supply, trading, sourcing, technical inspection, and export of high-power industrial equipment, including diesel generator sets, gas turbines, heavy-duty engines, and original and aftermarket spare parts.
                 </p>
-                <p class="text-secondary small mb-4" style="line-height: 1.8; font-size: 0.92rem;">
-                    We supply certified machinery from leading manufacturers including Caterpillar, Cummins, MTU, MWM, and Jenbacher. Every equipment unit is verified for operational integrity before ocean freight dispatch.
+
+                <p class="text-secondary mb-3 small fw-semibold" style="letter-spacing: 0.2px;">
+                    We source and supply equipment from leading global manufacturers and brands, including:
                 </p>
+
+                <!-- Equipment Domain Callouts -->
+                <div class="my-3 d-flex flex-column gap-2.5">
+                    <div class="p-3 rounded-3 border bg-light bg-opacity-50">
+                        <div class="fw-bold text-dark mb-1 small text-uppercase d-flex align-items-center gap-2" style="letter-spacing: 0.5px;">
+                            <i class="fas fa-fan text-primary"></i>
+                            <span>GAS TURBINES:</span>
+                        </div>
+                        <div class="text-secondary small" style="line-height: 1.6;">
+                            General Electric (GE), Siemens Energy, Mitsubishi Power, Ansaldo Energia, Solar Turbines, Dongfang Electric, and other major manufacturers.
+                        </div>
+                    </div>
+
+                    <div class="p-3 rounded-3 border bg-light bg-opacity-50">
+                        <div class="fw-bold text-dark mb-1 small text-uppercase d-flex align-items-center gap-2" style="letter-spacing: 0.5px;">
+                            <i class="fas fa-bolt text-primary"></i>
+                            <span>DIESEL &amp; GAS GENERATOR SETS:</span>
+                        </div>
+                        <div class="text-secondary small" style="line-height: 1.6;">
+                            Caterpillar, Cummins, MTU, MWM, Wärtsilä, INNIO Jenbacher, Perkins, Denyo, and other established manufacturers.
+                        </div>
+                    </div>
+
+                    <div class="p-3 rounded-3 border bg-light bg-opacity-50">
+                        <div class="fw-bold text-dark mb-1 small text-uppercase d-flex align-items-center gap-2" style="letter-spacing: 0.5px;">
+                            <i class="fas fa-cogs text-primary"></i>
+                            <span>SPARE PARTS &amp; COMPONENTS:</span>
+                        </div>
+                        <div class="text-secondary small" style="line-height: 1.6;">
+                            We also supply a wide range of spare parts and components for gas turbines, diesel and gas generator sets, and heavy industrial engines, including critical mechanical, electrical, control, and auxiliary-system components.
+                        </div>
+                    </div>
+                </div>
+
+                <p class="text-secondary small mb-3" style="line-height: 1.75; font-size: 0.92rem;">
+                    Our sourcing network enables us to identify both new and pre-owned equipment according to our clients' technical and commercial requirements. Where applicable, equipment is subject to technical and documentary verification, including inspection of operational condition, specifications, maintenance history, and available documentation before shipment.
+                </p>
+
+                <p class="text-secondary small mb-3" style="line-height: 1.75; font-size: 0.92rem;">
+                    We serve industrial clients, energy companies, equipment traders, project developers, EPC contractors, and other professional buyers worldwide.
+                </p>
+
+                <div class="p-3 rounded-3 border-start border-3 border-primary bg-primary bg-opacity-10 mb-4">
+                    <p class="text-dark small mb-0 fw-semibold" style="line-height: 1.6;">
+                        <i class="fas fa-bullseye text-primary me-1.5"></i> <strong>Our Mission:</strong> To connect reliable industrial equipment with qualified buyers through transparent sourcing, technical verification, and professional international logistics.
+                    </p>
+                </div>
+
                 <div class="d-flex flex-wrap align-items-center gap-3">
                     <a href="<?php echo BASE_URL; ?>/about.php" class="btn btn-primary rounded-3 px-4 py-2.5 fw-semibold shadow-sm" style="font-size: 0.88rem;">
                         About Us <i class="fas fa-arrow-right ms-2"></i>
@@ -118,9 +168,9 @@ $slider_products = array_slice($slider_products, 0, 8);
                 </div>
             </div>
 
-            <!-- Right: 3 Key Facts / Pillars (Clean typography without card boxes) -->
-            <div class="col-lg-5">
-                <div class="ps-lg-4 border-start border-2 border-primary border-opacity-25 d-flex flex-column gap-4">
+            <!-- Right: 3 Key Facts / Pillars (Sticky and clean) -->
+            <div class="col-lg-5 col-xl-4">
+                <div class="ps-lg-4 border-start border-2 border-primary border-opacity-25 d-flex flex-column gap-4 sticky-top" style="top: 100px;">
                     <div>
                         <div class="d-flex align-items-center gap-2 mb-1">
                             <i class="fas fa-check-circle text-primary fs-5"></i>

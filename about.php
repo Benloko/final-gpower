@@ -8,7 +8,7 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-8 mx-auto text-center text-white">
-                <h1 class="display-3 fw-bold mb-3" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">About Gpower</h1>
+                <h1 class="display-3 fw-bold mb-3" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">About GPOWER STORE</h1>
                 <p class="lead mb-0" style="font-size: 1.25rem; opacity: 0.95;">Your trusted partner for professional equipment worldwide</p>
             </div>
         </div>
@@ -31,14 +31,12 @@ require_once __DIR__ . '/includes/header.php';
                         <div class="col-md-10">
                             <h2 class="fw-bold mb-3" style="color: #2d3748;">Who We Are</h2>
                             <p class="text-muted mb-3" style="font-size: 1.05rem; line-height: 1.8;">
-                                Gpower is an international company specializing in the distribution of high-quality professional equipment.
-                                Since our founding, we are committed to providing reliable, high-performance products that meet the needs
-                                of professionals and businesses across all industries worldwide.
+                                GPOWER STORE is an international company specializing in the supply, trading, sourcing, technical inspection, and export of high-power industrial equipment, diesel generator sets, gas turbines, heavy-duty engines, and original and aftermarket spare parts.
+                                Since our founding, we are committed to providing reliable, high-performance machinery that meets the stringent requirements
+                                of energy companies, EPC contractors, and industrial professionals worldwide.
                             </p>
                             <p class="text-muted mb-0" style="font-size: 1.05rem; line-height: 1.8;">
-                                Our expertise in industrial equipment allows us to carefully select every product in our catalog, ensuring customer
-                                satisfaction and success wherever they are. We understand that reliability and performance are essential for your
-                                operations, which is why we partner only with globally recognized brands.
+                                Our global sourcing network enables us to supply new and pre-owned equipment with rigorous documentary and technical inspection before ocean freight dispatch. We partner with world-renowned manufacturers such as Caterpillar, Cummins, MTU, MWM, GE, Siemens Energy, and Jenbacher to ensure uncompromised operational excellence.
                             </p>
                         </div>
                     </div>

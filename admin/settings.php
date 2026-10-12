@@ -294,8 +294,8 @@ require_once __DIR__ . '/includes/header.php';
                         <input type="text" 
                                name="site_name" 
                                class="form-control form-control-lg border-1 rounded-3" 
-                               value="<?php echo htmlspecialchars($settings['site_name'] ?? 'Gpower'); ?>"
-                               placeholder="Ex: Gpower"
+                               value="<?php echo htmlspecialchars($settings['site_name'] ?? 'GPOWER STORE'); ?>"
+                               placeholder="Ex: GPOWER STORE"
                                required>
                         <div class="form-text small">The name displayed on your website</div>
                     </div>
@@ -384,7 +384,7 @@ require_once __DIR__ . '/includes/header.php';
                             Format: Country code + number without spaces or symbols
                         </div>
                     </div>
-                    <input type="hidden" name="site_name" value="<?php echo htmlspecialchars($settings['site_name'] ?? 'Gpower'); ?>">
+                    <input type="hidden" name="site_name" value="<?php echo htmlspecialchars($settings['site_name'] ?? 'GPOWER STORE'); ?>">
                     <input type="hidden" name="site_email" value="<?php echo htmlspecialchars($settings['site_email'] ?? ''); ?>">
                     <input type="hidden" name="site_phone" value="<?php echo htmlspecialchars($settings['site_phone'] ?? ''); ?>">
                 </div>

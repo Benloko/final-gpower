@@ -40,6 +40,11 @@ if (isset($_COOKIE['visitor_email'])) {
     <meta name="google-site-verification" content="MlmZDajPpfi6R98SmUsi_K3Ixj-JMgl2wiVhjIXW1_o" />
     <title><?php echo isset($page_title) ? $page_title . ' - ' : ''; ?><?php echo t('site_name'); ?></title>
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="<?php echo BASE_URL; ?>/assets/images/favicon.ico?v=<?php echo filemtime(__DIR__ . '/../assets/images/favicon.ico'); ?>">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?php echo BASE_URL; ?>/assets/images/favicon-32x32.png?v=<?php echo filemtime(__DIR__ . '/../assets/images/favicon-32x32.png'); ?>">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo BASE_URL; ?>/assets/images/apple-touch-icon.png?v=<?php echo filemtime(__DIR__ . '/../assets/images/apple-touch-icon.png'); ?>">
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
@@ -59,7 +64,7 @@ if (isset($_COOKIE['visitor_email'])) {
     <div class="top-announcement-bar py-1 px-3 text-white border-bottom border-secondary border-opacity-25 d-none d-md-block" style="font-size: 0.78rem; background: #070d19 !important;">
         <div class="container d-flex justify-content-between align-items-center py-0.5">
             <div class="d-flex align-items-center gap-3 text-white-50">
-                <span><i class="fas fa-bolt text-warning me-1"></i> <strong class="text-white">GPOWER INDUSTRIAL</strong> Heavy Machinery & Power Plants</span>
+                <span><i class="fas fa-bolt text-warning me-1"></i> <strong class="text-white">GPOWER STORE</strong> Heavy Machinery & Power Plants</span>
                 <span class="text-secondary">•</span>
                 <span><i class="fas fa-globe me-1 text-info"></i> Worldwide Freight & Logistics</span>
             </div>
@@ -82,10 +87,10 @@ if (isset($_COOKIE['visitor_email'])) {
             <div class="container d-flex align-items-center justify-content-between">
                 <a class="navbar-brand d-flex align-items-center gap-2" href="<?php echo BASE_URL; ?>/">
                     <div class="brand-logo-container p-1 rounded-circle bg-white shadow-sm d-flex align-items-center justify-content-center" style="border: 2px solid rgba(37,99,235,0.25);">
-                        <img src="<?php echo BASE_URL; ?>/assets/images/logo.jpeg" alt="Gpower" class="brand-logo rounded-circle" style="width: 32px; height: 32px; object-fit: cover;">
+                        <img src="<?php echo BASE_URL; ?>/assets/images/logo.jpeg?v=<?php echo filemtime(__DIR__ . '/../assets/images/logo.jpeg'); ?>" alt="GPOWER STORE" class="brand-logo rounded-circle" style="width: 32px; height: 32px; object-fit: cover;">
                     </div>
                     <div class="d-flex flex-column">
-                        <span class="brand-text text-dark" style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 1.25rem; letter-spacing: -0.5px; line-height: 1;">GPOWER<span class="text-primary">.</span></span>
+                        <span class="brand-text text-dark" style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 1.25rem; letter-spacing: -0.5px; line-height: 1;">GPOWER STORE<span class="text-primary">.</span></span>
                         <span class="brand-subtext text-muted" style="font-size: 0.6rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;">Heavy Equipment</span>
                     </div>
                 </a>
@@ -119,8 +124,8 @@ if (isset($_COOKIE['visitor_email'])) {
             <div class="offcanvas-header border-bottom border-secondary border-opacity-25 py-3">
                 <h5 class="offcanvas-title" id="mobileMenuLabel">
                     <div class="d-flex align-items-center gap-2">
-                        <img src="<?php echo BASE_URL; ?>/assets/images/logo.jpeg" alt="Gpower" class="rounded-circle" style="width:36px;height:36px;object-fit:cover;">
-                        <span class="brand-text text-white" style="font-family: 'Plus Jakarta Sans', sans-serif;">GPOWER</span>
+                        <img src="<?php echo BASE_URL; ?>/assets/images/logo.jpeg?v=<?php echo filemtime(__DIR__ . '/../assets/images/logo.jpeg'); ?>" alt="GPOWER STORE" class="rounded-circle" style="width:36px;height:36px;object-fit:cover;">
+                        <span class="brand-text text-white" style="font-family: 'Plus Jakarta Sans', sans-serif;">GPOWER STORE</span>
                     </div>
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -147,7 +152,7 @@ if (isset($_COOKIE['visitor_email'])) {
         <?php if ($_GET['newsletter'] === 'success'): ?>
             <div class="alert alert-success alert-dismissible fade show rounded-pill px-4 shadow-sm border-0 d-flex align-items-center gap-2 mb-0" role="alert">
                 <i class="fas fa-check-circle fs-5"></i>
-                <span><strong>Subscription Confirmed!</strong> Thank you for subscribing to GPower equipment inventory alerts.</span>
+                <span><strong>Subscription Confirmed!</strong> Thank you for subscribing to GPOWER STORE equipment inventory alerts.</span>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         <?php elseif ($_GET['newsletter'] === 'exists'): ?>

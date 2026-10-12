@@ -21,7 +21,7 @@ function notifyNewProduct($product) {
     $subject = "🎉 New product available: " . $product['name'];
 
     $body = "Hello,\n\n";
-    $body .= "A new exclusive product has arrived at Gpower!\n\n";
+    $body .= "A new exclusive product has arrived at GPOWER STORE!\n\n";
     $body .= "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n";
     $body .= "📦 " . strtoupper($product['name']) . "\n\n";
     
@@ -39,7 +39,7 @@ function notifyNewProduct($product) {
     $body .= "👉 View product: " . BASE_URL . "/product-details.php?id=" . $product['id'] . "\n\n";
     $body .= "Don't miss this opportunity!\n\n";
     $body .= "───────────────────────────────────\n";
-    $body .= "The Gpower Team\n";
+    $body .= "The GPOWER STORE Team\n";
     $body .= "Your trusted partner\n\n";
     $body .= "📧 To unsubscribe, log into your account\n";
     

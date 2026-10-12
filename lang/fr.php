@@ -2,7 +2,7 @@
 // French translations
 $lang = [
     // General
-    'site_name' => 'Gpower',
+    'site_name' => 'GPOWER STORE',
     'home' => 'Accueil',
     'products' => 'Produits',
     'categories' => 'Catégories',
@@ -34,7 +34,7 @@ $lang = [
     'browse_category' => 'Parcourir la catégorie',
 
     // Footer
-    'footer_about' => 'À propos de Gpower',
+    'footer_about' => 'À propos de GPOWER STORE',
     'footer_text' => 'Votre partenaire de confiance pour des équipements et outils électriques professionnels.',
     'quick_links' => 'Liens rapides',
     'follow_us' => 'Suivez-nous',
@@ -42,7 +42,7 @@ $lang = [
     'email' => 'Email',
     'phone' => 'Téléphone',
     'address' => 'Adresse',
-    'copyright' => '© 2025 Gpower. Tous droits réservés.',
+    'copyright' => '© ' . date('Y') . ' GPOWER STORE. Tous droits réservés.',
 
     // Admin
     'admin_panel' => 'Panneau d\'administration',

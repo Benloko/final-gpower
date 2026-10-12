@@ -636,7 +636,7 @@ textarea.form-control-modern {
                         </div>
                     </div>
                     
-                        <a href="https://wa.me/<?php echo $settings['whatsapp_number'] ?? ''; ?>?text=Hello%20Gpower%2C%20I%20would%20like%20to%20get%20information" 
+                        <a href="https://wa.me/<?php echo $settings['whatsapp_number'] ?? ''; ?>?text=Hello%20GPOWER%20STORE%2C%20I%20would%20like%20to%20get%20information" 
                        target="_blank"
                        class="contact-btn btn-whatsapp">
                         <i class="fab fa-whatsapp me-2"></i>Discuter Maintenant
@@ -808,7 +808,7 @@ textarea.form-control-modern {
                 <i class="fas fa-comments mb-3" style="font-size: 2.5rem; opacity: 0.9;"></i>
                 <h3>Need a Quick Answer?</h3>
                 <p>WhatsApp is the fastest way to reach us. Get a reply in minutes!</p>
-                <a href="https://wa.me/<?php echo $settings['whatsapp_number'] ?? ''; ?>?text=Bonjour%20Gpower" 
+                <a href="https://wa.me/<?php echo $settings['whatsapp_number'] ?? ''; ?>?text=Bonjour%20GPOWER%20STORE" 
                    target="_blank"
                    class="btn-cta">
                     <i class="fab fa-whatsapp text-success" style="font-size: 1.25rem;"></i>

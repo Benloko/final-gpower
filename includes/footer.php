@@ -5,8 +5,8 @@
                 <!-- Col 1: Brand & About -->
                 <div class="col-lg-5 col-md-6">
                     <a href="<?php echo BASE_URL; ?>/" class="d-inline-flex align-items-center gap-2 text-decoration-none mb-3">
-                        <img src="<?php echo BASE_URL; ?>/assets/images/logo.jpeg" alt="Gpower" class="rounded-circle" style="width: 32px; height: 32px; object-fit: cover;">
-                        <span class="text-white fw-bold" style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.25rem; letter-spacing: -0.5px;">GPOWER<span class="text-primary">.</span></span>
+                        <img src="<?php echo BASE_URL; ?>/assets/images/logo.jpeg?v=<?php echo filemtime(__DIR__ . '/../assets/images/logo.jpeg'); ?>" alt="GPOWER STORE" class="rounded-circle" style="width: 32px; height: 32px; object-fit: cover;">
+                        <span class="text-white fw-bold" style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.25rem; letter-spacing: -0.5px;">GPOWER STORE<span class="text-primary">.</span></span>
                     </a>
                     <p class="text-white-50 small mb-3" style="line-height: 1.6; max-width: 340px; font-size: 0.85rem;">
                         Certified industrial power generators, gas turbines, and heavy machinery for global export.
@@ -62,7 +62,7 @@
             <div class="container">
                 <div class="row align-items-center g-2">
                     <div class="col-md-6 text-center text-md-start">
-                        <p class="text-white-50 small mb-0" style="font-size: 0.78rem;">&copy; <?php echo date('Y'); ?> GPOWER. All rights reserved.</p>
+                        <p class="text-white-50 small mb-0" style="font-size: 0.78rem;">&copy; <?php echo date('Y'); ?> GPOWER STORE. All rights reserved.</p>
                     </div>
                     <div class="col-md-6 text-center text-md-end">
                         <ul class="list-inline mb-0 small" style="font-size: 0.78rem;">

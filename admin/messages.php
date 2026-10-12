@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reply_message'])) {
             $email_body .= "Votre message original :\n";
             $email_body .= $message['message'] . "\n\n";
             $email_body .= "Best regards,\n";
-            $email_body .= "The Gpower Team";
+            $email_body .= "The GPOWER STORE Team";
             
             if (sendEmail($to, $toName, $subject, $email_body, false)) {
                 $success = "Reply saved and emailed successfully!";

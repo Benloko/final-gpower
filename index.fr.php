@@ -38,7 +38,7 @@ $products = $stmt->fetchAll();
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-8 text-center">
-                <h1 class="fw-bold mb-3 text-dark" style="font-size: 2.5rem;">Bienvenue chez Gpower</h1>
+                <h1 class="fw-bold mb-3 text-dark" style="font-size: 2.5rem;">Bienvenue chez GPOWER STORE</h1>
                 <p class="text-muted mb-4 lead">Solutions d'énergie haut de gamme.<br>Qualité et fiabilité garanties.</p>
                 
                 <!-- Compact Search -->

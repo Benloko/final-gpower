@@ -5,7 +5,7 @@ define('SMTP_PORT', 587);
 define('SMTP_USERNAME', 'votre-email@gmail.com'); // Change this
 define('SMTP_PASSWORD', 'votre-mot-de-passe-app'); // Change this
 define('SMTP_FROM_EMAIL', 'votre-email@gmail.com'); // Change this
-define('SMTP_FROM_NAME', 'Gpower');
+define('SMTP_FROM_NAME', 'GPOWER STORE');
 
 /**
  * Function to send an email using PHPMailer

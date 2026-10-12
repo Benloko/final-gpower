@@ -38,7 +38,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion Admin - Gpower</title>
+    <title>Connexion Admin - GPOWER STORE</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../assets/images/favicon.ico?v=<?php echo filemtime(__DIR__ . '/../assets/images/favicon.ico'); ?>">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/images/favicon-32x32.png?v=<?php echo filemtime(__DIR__ . '/../assets/images/favicon-32x32.png'); ?>">
+    <link rel="apple-touch-icon" sizes="180x180" href="../assets/images/apple-touch-icon.png?v=<?php echo filemtime(__DIR__ . '/../assets/images/apple-touch-icon.png'); ?>">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -303,9 +307,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="login-card">
             <div class="login-header">
                 <div class="logo-circle">
-                    <img src="../assets/images/logo.jpeg" alt="Gpower Logo">
+                    <img src="../assets/images/logo.jpeg?v=<?php echo filemtime(__DIR__ . '/../assets/images/logo.jpeg'); ?>" alt="GPOWER STORE Logo">
                 </div>
-                <h1>Gpower Admin</h1>
+                <h1>GPOWER STORE Admin</h1>
                 <p>Espace d'administration</p>
             </div>
             
@@ -368,7 +372,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="footer-note">
             <small>
                 <i class="fas fa-shield-alt me-1"></i>
-                Secure login - Gpower © 2025
+                Secure login - GPOWER STORE © <?php echo date('Y'); ?>
             </small>
         </div>
     </div>

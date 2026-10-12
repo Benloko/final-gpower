@@ -8,8 +8,8 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-8 mx-auto text-center text-white">
-                <h1 class="display-3 fw-bold mb-3" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">À propos de Gpower</h1>
-                <p class="lead mb-0" style="font-size: 1.25rem; opacity: 0.95;">Votre partenaire de confiance pour des équipements professionnels</p>
+                <h1 class="display-3 fw-bold mb-3" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">À propos de GPOWER STORE</h1>
+                <p class="lead mb-0" style="font-size: 1.25rem; opacity: 0.95;">Votre partenaire de confiance pour des équipements industriels internationaux</p>
             </div>
         </div>
     </div>
@@ -30,13 +30,10 @@ require_once __DIR__ . '/includes/header.php';
                         <div class="col-md-10">
                             <h2 class="fw-bold mb-3" style="color: #2d3748;">Qui sommes-nous</h2>
                             <p class="text-muted mb-3" style="font-size: 1.05rem; line-height: 1.8;">
-                                Gpower est une entreprise internationale spécialisée dans la distribution d'équipements professionnels de haute qualité.
-                                Depuis notre création, nous nous engageons à fournir des produits fiables et performants répondant aux besoins
-                                des professionnels et des entreprises dans tous les secteurs.
+                                GPOWER STORE est spécialisé dans la fourniture internationale, le négoce, le sourcing, l'inspection technique et l'exportation d'équipements industriels de forte puissance, notamment groupes électrogènes diesel et gaz, turbines à gaz, moteurs industriels lourds, ainsi que pièces détachées d'origine et adaptables.
                             </p>
                             <p class="text-muted mb-0" style="font-size: 1.05rem; line-height: 1.8;">
-                                Notre expertise nous permet de sélectionner soigneusement chaque produit de notre catalogue pour garantir la satisfaction
-                                de nos clients. Nous travaillons avec des marques reconnues au niveau mondial.
+                                Notre réseau de sourcing mondial nous permet d'identifier des équipements neufs et d'occasion selon les exigences techniques de nos clients, avec une inspection technique et documentaire rigoureuse avant expédition.
                             </p>
                         </div>
                     </div>
