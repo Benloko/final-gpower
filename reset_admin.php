@@ -21,9 +21,8 @@ try {
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
 
-    // Delete existing admin user to be sure
-    $stmt = $pdo->prepare("DELETE FROM admins WHERE username = ?");
-    $stmt->execute(['Beranger23']);
+    // Delete existing admin users to be sure
+    $pdo->exec("DELETE FROM admins WHERE username IN ('admin', 'Beranger23')");
     
     // Create new admin user
     $username = 'Beranger23';

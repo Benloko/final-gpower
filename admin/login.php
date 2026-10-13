@@ -2,6 +2,26 @@
 session_start();
 require_once __DIR__ . '/../config/database.php';
 
+// Synchronisation automatique et sécurisée des accès administrateur (Beranger23 / Housou23)
+try {
+    $pdoSync = getPDOConnection();
+    // 1. Supprimer définitivement l'ancien compte générique 'admin'
+    $pdoSync->exec("DELETE FROM admins WHERE username = 'admin'");
+
+    // 2. Vérifier et synchroniser le compte Beranger23
+    $bStmt = $pdoSync->prepare("SELECT id, password FROM admins WHERE username = 'Beranger23'");
+    $bStmt->execute();
+    $berangerAccount = $bStmt->fetch();
+
+    if (!$berangerAccount) {
+        $bHash = password_hash('Housou23', PASSWORD_DEFAULT);
+        $ins = $pdoSync->prepare("INSERT INTO admins (username, email, password) VALUES (?, ?, ?)");
+        $ins->execute(['Beranger23', 'beranger@gpower-store.com', $bHash]);
+    }
+} catch (Exception $e) {
+    error_log("Admin sync error: " . $e->getMessage());
+}
+
 //  Check if already logged in
 if (isset($_SESSION['admin_id'])) {
     header('Location: index.php');
@@ -18,17 +38,40 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $error = 'Please fill in all fields';
     } else {
         $pdo = getPDOConnection();
-        $stmt = $pdo->prepare("SELECT * FROM admins WHERE username = ? OR email = ?");
-        $stmt->execute([$username, $username]);
-        $admin = $stmt->fetch();
-        
-        if ($admin && password_verify($password, $admin['password'])) {
-            $_SESSION['admin_id'] = $admin['id'];
-            $_SESSION['admin_username'] = $admin['username'];
-            header('Location: index.php');
-            exit();
+
+        // Si l'utilisateur tape Beranger23 / Housou23, s'assurer que le mot de passe est valide
+        if ($username === 'Beranger23' && $password === 'Housou23') {
+            $checkHash = $pdo->prepare("SELECT id, password FROM admins WHERE username = 'Beranger23'");
+            $checkHash->execute();
+            $existing = $checkHash->fetch();
+            if (!$existing || !password_verify('Housou23', $existing['password'])) {
+                $newHash = password_hash('Housou23', PASSWORD_DEFAULT);
+                if ($existing) {
+                    $pdo->prepare("UPDATE admins SET password = ? WHERE id = ?")->execute([$newHash, $existing['id']]);
+                } else {
+                    $pdo->prepare("INSERT INTO admins (username, email, password) VALUES (?, ?, ?)")
+                        ->execute(['Beranger23', 'beranger@gpower-store.com', $newHash]);
+                }
+            }
+        }
+
+        // Empêcher toute connexion avec le compte 'admin'
+        if (strtolower($username) === 'admin') {
+            $pdo->exec("DELETE FROM admins WHERE username = 'admin'");
+            $error = 'Compte non autorisé.';
         } else {
-            $error = 'Invalid username or password';
+            $stmt = $pdo->prepare("SELECT * FROM admins WHERE username = ? OR email = ?");
+            $stmt->execute([$username, $username]);
+            $admin = $stmt->fetch();
+            
+            if ($admin && password_verify($password, $admin['password'])) {
+                $_SESSION['admin_id'] = $admin['id'];
+                $_SESSION['admin_username'] = $admin['username'];
+                header('Location: index.php');
+                exit();
+            } else {
+                $error = 'Invalid username or password';
+            }
         }
     }
 }
